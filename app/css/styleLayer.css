@@ -1,0 +1,135 @@
+#containerLayerMenu {
+    overflow: hidden;
+    height: 100vh;
+    min-width: 370px;
+    padding: 10px;
+}
+
+#divMapControls {
+    border-bottom: 1px solid #000;
+    padding: 10px;
+}
+
+#divDropdownMenu {
+    font-size: 1.1rem;
+    margin-top: 8%;
+    overflow: hidden;
+}
+
+.bgGrey {
+    background-color: grey;
+}
+
+.bgWhite {
+    background-color: white;
+}
+
+.textBlack {
+    color: black;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+.justify_end {
+    justify-content: end;
+}
+
+.justify_center {
+    justify-content: center;
+}
+
+.justify_between {
+    justify-content: space-between;
+}
+
+.align_center {
+    align-items: center;
+}
+
+.align_end {
+    align-items: end;
+}
+
+.subMenu {
+    margin-left: 5%;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.h100 {
+    height: 100%;
+}
+
+.logoSwissgeol {
+    height: 40%;
+    width: 40%;
+}
+
+.text_center {
+    text-align: center;
+}
+
+.mTop3 {
+    margin-top: 3%;
+}
+
+.mTop5 {
+    margin-top: 5%;
+}
+
+.mBottom3 {
+    margin-bottom: 3px;
+}
+
+.mBottom8 {
+    margin-bottom: 8px;
+}
+
+.mBottom12 {
+    margin-bottom: 12px;
+}
+
+.mBottom20{
+    margin-bottom: 20px;
+}
+
+.mBottom30{
+    margin-bottom: 30px;
+}
+
+.font_bold {
+    font-weight: bold;
+}
+
+.font_1rem {
+    font-size: 0.8rem;
+}
+
+.font_05rem {
+    font-size: 0.7rem;
+}
+
+.w100 {
+    width: 100%;
+}
+
+.w80 {
+    width: 80%;
+}
+
+.mRight5 {
+    margin-right: 10%;
+}
+
+.mLeft10 {
+    margin-left: 10%;
+}
+
+.flex_column {
+    flex-direction: column;
+}

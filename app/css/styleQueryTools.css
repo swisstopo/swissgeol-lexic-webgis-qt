@@ -1,0 +1,107 @@
+#containerQueryTools {
+    height: 100vh;
+    min-width: 300px;
+    padding: 20px;
+}
+
+.bgGrey {
+    background-color: #f1f3f5;
+}
+
+.bgWhite {
+    background-color: white;
+}
+
+.textBlack {
+    color: black;
+}
+
+.mTop4 {
+    margin-top: 4%;
+}
+
+.mTop8 {
+    margin-top: 8%;
+}
+
+.mTop10 {
+    margin-top: 10%;
+}
+
+.mTop15 {
+    margin-top: 15%;
+}
+
+.mButtom2 {
+    margin-bottom: 2%;
+}
+
+.mButtom40 {
+    margin-bottom: 50%;
+}
+
+.fontSize_1_5rem {
+    font-size: 1.5rem;
+}
+
+.fontSize_1rem {
+    font-size: 1rem;
+}
+
+.fontSize_0_8rem {
+    font-size: 0.8rem;
+}
+
+.fontSize_0_7rem {
+    font-size: 0.7rem;
+}
+
+.font_bold {
+    font-weight: bold;
+}
+
+.border {
+    border: 1px solid gray;
+    padding: 8px;
+}
+
+.text_center {
+    text-align: center;
+}
+
+.mRight5 {
+    margin-right: 5%;
+}
+
+.line {
+    width: 95%;
+    height: 2px;
+    background-color: black;
+    margin: 20px auto;
+}
+
+.w100 {
+    width: 100%;
+}
+
+.w65 {
+    width: 65%;
+}
+
+.mLeft5 {
+    margin-left: 5%;
+}
+
+.containerFilter {
+    border: 1px solid rgb(177, 177, 177);
+    padding: 8;
+    border-radius: 12px;
+    margin-top: 3%;
+    background-color: rgb(212, 212, 212);
+}
+
+.divFilter {
+    width: 100%;
+    margin-left: 5%;
+    margin-right: 5%;
+}

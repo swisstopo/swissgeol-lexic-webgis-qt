@@ -1,0 +1,17 @@
+{
+    "Chronostratigraphy": {
+        "id": "Chronostratigraphy",
+        "url": "https://graphdb.voc.dev.epsilon-italia.it",
+        "repositoryId": "Chronostratigraphy_Demo_Dataset_core",
+        "username": "",
+        "password": ""
+    },
+    
+    "TectonicUnits": {
+        "id": "TectonicUnits",
+        "url": "https://graphdb.voc.dev.epsilon-italia.it",
+        "repositoryId": "TectonicUnits_Demo_Dataset_core",
+        "username": "",
+        "password": ""
+    }
+}
