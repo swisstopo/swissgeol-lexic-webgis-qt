@@ -1,5 +1,10 @@
 import { Layer } from '../slice/layerMenuSlice';
-
+/**
+ * Create the query string for each filter to be added, even concatenating multiple filters.
+ * 
+ * @param layer layer on which the query string will be inserted
+ * @returns query string for filter
+ */
 export const createQueryString = (layer: Layer): string => {
     let queryString = '\'\'';
 
@@ -10,7 +15,7 @@ export const createQueryString = (layer: Layer): string => {
 
         const conditions: string[] = [];
 
-        // Filtraggio per filterByAttribute
+        // Filtering by value/key attributes
         if (byAttributeList && byAttributeList.length > 0) {
             const attributeConditions = byAttributeList.map(attr =>
                 `"${attr.key}" = \'${attr.value}\'`
@@ -25,7 +30,7 @@ export const createQueryString = (layer: Layer): string => {
          } */
 
 
-        // Filtraggio per filterByTectoUnitsTerm
+        // Filtering by tecto units term
         if (tectoTermsList && tectoTermsList.length > 0) {
             const columns = getColumnNamesFromFilterConfiguration(layer);
             const filterConfiguration = layer.filterConfiguration?.filterConfigurationByTectoUnitsTerm;
@@ -55,7 +60,16 @@ export const createQueryString = (layer: Layer): string => {
     console.log('CREATESTRINGQUERY: ' + queryString);
     return queryString;
 };
-
+/**
+ * Function to extract column names from a layer's filter configuration
+ * 
+ * This function retrieves column names that are specified in the filter configuration of a given layer. 
+ * It checks if the layer has a filter configuration and if it includes filter settings based on tectonic units terms. 
+ * If such settings are present and include attributes to filter, those attribute names are added to the result array.
+ * 
+ * @param layer - The layer object containing filter configuration
+ * @returns An array of column names extracted from the filter configuration
+ */
 const getColumnNamesFromFilterConfiguration = (layer: Layer): string[] => {
     const columns: string[] = [];
 

@@ -17,37 +17,76 @@ import FeatureInfoPopup from './featureInfoPopup';
 import { setAttributesConfiguration } from '../slice/layerMenuSlice';
 
 
+/**
+ * The map that contains layer ids and tileLayer
+ */
 interface LayerTileMap {
     [layerId: string]: TileLayer<TileWMS> | TileLayer<OSM>;
 }
+
+/**
+ * The map containing layer ids and query(string) for filters.
+ */
 interface LayerFilters {
     [layerId: string]: string;
 }
 
+
+/**
+ * Manages the map and its layers:
+ * - creates the map
+ * - constantly updates itself with every change on layer configurations(change of checked layers, opacity...)
+ * - displays the checked layers
+ * - displays filter layers
+ */
 const MapComponent: React.FC = () => {
     const [newMap, setMap] = useState<Map | null>(null);
-
+    /**
+    * map that contains for each layer id the source dl tileLayer
+    */
     const [layerTilesMap, setLayerTilesMap] = useState<LayerTileMap>({});
     const [addedLayerId, setAddedLayerId] = useState<string[]>([]);
-
     const layerData = useSelector((state: RootState) => state.layerMenuSlice.layers);
+    /**
+    * contains all layers.
+    */
     const expandedLayerList = createExpansLayersList(layerData, false);
+    /**
+     * contains all layers that are filterable True.
+     */
     const expandedLayerListFiltered = createExpansLayersList(layerData, true);
-
+    /**
+     * contains the list of layers that are checked.
+     */
     const checkedLayers = expandedLayerListFiltered.filter(layer => layer.isChecked);
-
+    /**
+     * contains the list of layers that can be filtered.
+     */
     const filterableLayers = expandedLayerList.filter(layer => layer.canFilter);
+    /**
+     * State holding a map of layer IDs to their corresponding filter queries.
+     */
     const [layerFiltersMap, setLayerFiltersMap] = useState<LayerFilters>({});
-
-
     const mapElementRef = useRef<HTMLDivElement>(null);
     const infoElementRef = useRef<HTMLDivElement>(null);
-
-
+    /**
+     * State indicating whether the data has been successfully fetched.
+     * 
+     * This boolean flag is used to track whether the initial data fetching process has been completed.
+     * It helps in managing the state and controlling conditional rendering or data fetching operations.
+     */
     const [hasFetched, setHasFetched] = useState(false);
+    /**
+     * List of layers that can be queried for feature information, filtered from the expanded layer list.
+     */
     const featuredFilterableLayers = expandedLayerListFiltered.filter(layer => layer.canGetFeatureInfo);
     const dispatch = useDispatch();
-
+    /**
+    * Creates the expanded list of layers by setting the layerTilesMap.
+    * 
+    * This effect runs whenever the dependencies change. It initializes the `tileLayers` object
+    * based on the filtered list of layers and their ability to provide feature information. 
+    */
     useEffect(() => {
         const tileLayers: LayerTileMap = {};
 
@@ -72,8 +111,14 @@ const MapComponent: React.FC = () => {
 
         setLayerTilesMap(tileLayers);
     }, []);
-
-    useEffect(() => {//bisognerà aggiungere un altro layer per i filtri con source diversa
+    /**
+    * Creates the filterLayerMap by setting a filter string for each id.
+    * 
+    * List dependencies:
+    * - {Layers[]} filterableLayers the list of filterable layers. 
+    * - {LayerFilters} layerFiltersMap the map containing layer ids and query(string) for the filters.
+    */
+    useEffect(() => {
         const newLayerFiltersMap: LayerFilters = {};
 
         filterableLayers.forEach(layer => {
@@ -92,7 +137,13 @@ const MapComponent: React.FC = () => {
         }
 
     }, [filterableLayers, layerFiltersMap]);
-
+    /**
+     * Does Params update of layers to apply filters.
+     * 
+     * List dependencies:
+     * - {LayerFilters} layerFiltersMap the map that contains layer id and query(string).
+     * - {LayerTileMap} layerTilesMap the map that contains layer id and tileLayer. 
+     */
     useEffect(() => {
         Object.entries(layerFiltersMap).forEach(([layerId, filterString]) => {
             const tileLayer = layerTilesMap[layerId];
@@ -107,7 +158,12 @@ const MapComponent: React.FC = () => {
         });
 
     }, [layerFiltersMap, layerTilesMap]);
-
+    /**
+     * Creates the map by loading the layers that are inserted into the layerTilesMap map.
+     * 
+     * List dependencies:
+     * - {LayerTileMap} layerTilesMap the map that contains layer id and tileLayer.
+     */
     useEffect(() => {
         if (!mapElementRef.current) return;
 
@@ -115,8 +171,9 @@ const MapComponent: React.FC = () => {
             target: mapElementRef.current,
             layers: [],
             view: new View({
-                center: [919690.25, 5964019.75],
-                zoom: 8,
+                //in order: longitude, latitude
+                center: [915788.3813658266, 5909670.533831278],
+                zoom: 8.6,
                 minZoom: 0,
                 maxZoom: 28,
             }),
@@ -130,7 +187,7 @@ const MapComponent: React.FC = () => {
                 new ZoomToExtent({
                     label: 'D',
                     extent: new View({
-                        center: [919690.25, 5964019.75],
+                        center: [915788.3813658266, 5909670.533831278],
                         zoom: 5,
                     }).getViewStateAndExtent().extent
                 }),
@@ -183,8 +240,14 @@ const MapComponent: React.FC = () => {
         };
 
     }, [layerTilesMap]);
-
-
+    /**
+     * Here we check whether layers have been added to the map or not by avoiding adding layers that have already been added to the map
+     * 
+     * Dependencies list:
+     * - {Layers[]} checkedLayers contains the checked layers.
+     * - {LayerTileMap} layerTilesMap the map that contains layer ids and tileLayers.
+     * - {Map} newMap the map of open layers.
+     */
     useEffect(() => {
         if (!newMap) return;
 
@@ -202,7 +265,14 @@ const MapComponent: React.FC = () => {
         });
 
     }, [newMap, checkedLayers, layerTilesMap]);
-
+    /**
+     * Deletes layers from the map if they are no longer present in the array of checked layers.
+     * 
+     * Dependencies list:
+     * - {Layers[]} checkedLayers contains the checked layers.
+     * - {LayerTileMap} layerTilesMap the map that contains layer ids and tileLayers.
+     * - {Map} newMap the map of open layers.
+     */
     useEffect(() => {
         if (!newMap) return;
 
@@ -218,7 +288,14 @@ const MapComponent: React.FC = () => {
         });
 
     }, [newMap, checkedLayers, layerTilesMap]);
-
+    /**
+     * Checks whether tileLayers of checked layers changes by dynamically updating opacity.
+     * 
+     * Dependencies list:
+     * - {Layers[]} checkedLayers contains the checked layers.
+     * - {LayerTileMap} layerTilesMap the map that contains layer ids and tileLayers.
+     * - {Map} newMap the map of open layers.
+     */
     useEffect(() => {
         if (!newMap) return;
 
@@ -230,7 +307,21 @@ const MapComponent: React.FC = () => {
         });
 
     }, [newMap, checkedLayers, layerTilesMap]);
-
+    /**
+     * Function to retrieve and store attribute names from feature layers.
+     * 
+     * It identifies the features of the layers that are filterable by generating a 
+     * `GetFeatureInfo` URL request to take this information about each layer. The function retrieves the XML response,
+     * parses it, and extracts the attribute names from the features. 
+     * the attribute names from the features. If the attribute names are found, they are sent to the archive 
+     * and the status is updated to indicate that the attributes have been retrieved.
+     * 
+     * Feature layers refer to data associated with specific points on the map. Some layers are configured to return detailed 
+     * data about the terrain or other attributes when queried, such as geological information, tectonic units, or chronological 
+     * data. 
+     * In conclusion, feature layers are the layers that have the possibility of requesting getFeatureInfo,
+     * and which therefore have associated attributes for each feature.
+     */
     const fetchAndStoreAttributeNames = () => {
         if (!newMap) return;
 
@@ -281,7 +372,17 @@ const MapComponent: React.FC = () => {
                 });
         });
     };
-
+    /**
+     * Effect hook to manage the fetching and storing of attribute names.
+     * 
+     * This hook is responsible for triggering the `fetchAndStoreAttributeNames` function, but only if the attributes have
+     * not yet been fetched (`hasFetched` is false). It ensures that attribute names are fetched and stored when the `newMap`
+     * object changes, but avoids redundant fetch operations if the data has already been retrieved.
+     * 
+     * The `hasFetched` flag is used to prevent unnecessary fetches. Once the attribute names have been successfully fetched,
+     * `hasFetched` is set to true, ensuring that the `fetchAndStoreAttributeNames` function is not called again unnecessarily.
+     * This behavior helps in optimizing performance by avoiding duplicate requests and ensuring efficient data management.
+     */
     useEffect(() => {
         if (!hasFetched) {
             fetchAndStoreAttributeNames();

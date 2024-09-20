@@ -1,5 +1,13 @@
 const { GraphDBServerClient, ServerClientConfig } = require('graphdb').server;
 const { RDFMimeType } = require('graphdb').http;
+/**
+ * Class for managing connections to a GraphDB server and retrieving repository information
+ * 
+ * The `GraphDBClient` class sets up a connection to a GraphDB server using the provided server URL, username, and password. 
+ * It configures the server client with timeout settings, headers for accepting SPARQL results in XML format, and basic 
+ * authentication. The class includes methods for retrieving repository IDs and accessing the server client instance.
+ * 
+ */
 
 class GraphDBClient {
     private serverClient: typeof GraphDBServerClient;

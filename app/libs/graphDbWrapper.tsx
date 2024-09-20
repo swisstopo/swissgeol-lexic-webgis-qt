@@ -59,7 +59,19 @@ export async function fetchVocabulariesData() {
 
     return results;
 }
-
+/**
+ * Function to fetch vocabulary terms by executing a SPARQL query against a specified vocabulary
+ * 
+ * This function iterates through a list of configured vocabularies to find the one matching the provided `vocabId`. 
+ * It then retrieves the necessary configuration (URL, username, password) and constructs a GraphDB client. 
+ * A SPARQL query is executed against the vocabulary's repository, and the results are processed to extract narrower concept IDs. 
+ * The function handles any errors by logging them and throwing an exception if the fetch fails.
+ * 
+ * @param query - The SPARQL query string to execute
+ * @param vocabId - The ID of the vocabulary to search within
+ * @returns A promise that resolves to an array of narrower concept IDs retrieved from the vocabulary
+ * @throws An error if the SPARQL query execution fails
+ */
 export async function fetchVocabolaryTermByQuery(query: string, vocabId: string) {
     const vocabulariesArray = Object.values(vocabulariesConfig);
     const results: string[] = [];

@@ -2,7 +2,14 @@ import { Filter, Layer, LayerState, Source } from "../slice/layerMenuSlice";
 import TileWMS from "ol/source/TileWMS";
 import { createQueryString } from "./StringCreateFilter";
 
-//seearch id layer sia nei layer padri che figli
+/**
+ * Recursively searches for a layer within the layer hierarchy.
+ * using the specified ID.
+ * 
+ * @param layers An array of Layer objects to be examined.
+ * @param id The ID of the layer to be searched.
+ * @returns The layer corresponding to the specified ID, if found; otherwise, undefined.
+ */
 export const findLayerById = (layers: Layer[], id: string): Layer | undefined => {
     for (const layer of layers) {
         if (layer.id === id) {
@@ -18,7 +25,14 @@ export const findLayerById = (layers: Layer[], id: string): Layer | undefined =>
     return undefined;
 };
 
-//crea una lista espansa dei layers
+
+/**
+ * Expands the list of layers, including filter layers if necessary.
+ * 
+ * @param layers An array of Layer objects to expand.
+ * @param removeDisabledFilterLayers A Boolean value indicating whether to remove disabled filter layers.
+ * @returns An array of expanded Layer objects.
+ */
 export const createExpansLayersList = (layers: Layer[], removeDisabledFilterLayers: boolean): Layer[] => {
     const expandedLayers: Layer[] = [];
 
@@ -45,7 +59,13 @@ export const createExpansLayersList = (layers: Layer[], removeDisabledFilterLaye
     return expandedLayers;
 };
 
-//contorlla se la lista dei filters è piena
+
+/**
+ * Checks whether the filter list is empty.
+ * 
+ * @param filters 
+ * @returns a boolean indicating whether the filter list is full or empty
+ */
 export const filtersNotEmpty = (filters: Filter | undefined): boolean => {
     return filters != undefined &&
         (
@@ -88,7 +108,12 @@ export const getSourceById = (layers: Layer[], id: string): TileWMS | undefined 
 };
 
 
-//crea una lista di source sui layer che hanno la possibilità delle features
+/**
+ * Gets the TileWMS sources of the layers that support feature information.
+ * 
+ * @param layers An array of Layer objects.
+ * @returns An array of TileWMS sources of the layers that support feature information.
+ */
 export const getFeaturesLayers = (layers: Layer[]): TileWMS[] => {
     const infoLayers = layers.filter(layer => layer.canGetFeatureInfo);
     const sources: TileWMS[] = [];

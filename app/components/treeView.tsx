@@ -4,10 +4,19 @@ import { Layer } from '../slice/layerMenuSlice';
 import "../css/styleLayer.css";
 import { filtersNotEmpty } from '../utilities/LayerMenuUtilities';
 
+/**
+ * Properties of the treeview
+ */
 interface TreeViewProps {
     layers: Layer[];
 }
 
+/**
+ * Manages the creation of the treeview: the tree composed of treenodes that allows the bvisualization and management of the layers within the application.
+ * In summary, a menu tree.
+ * 
+ * Operates by reading an array of layers.
+ */
 const TreeView: React.FC<TreeViewProps> = ({ layers }) => {
     const renderTreeNode = (layer: Layer): React.ReactElement<typeof TreeNode> => {
         return (

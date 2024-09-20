@@ -30,7 +30,12 @@ const FeatureInfoPopup: React.FC<FeatureInfoPopupProps> = ({ map, checkedLayerLi
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [tableDataList, setTableDataList] = useState<any[]>([]);
     const dispatch = useDispatch();
-
+    /**
+     * Function to retrieve the label associated with a given processed value from a vocabulary
+     * 
+     * @param processedValue - The value to search for within the cached vocabulary
+     * @returns The label corresponding to the processed value, or an empty string if not found
+     */
     const getVocabularyLabel = (processedValue: string) => {
         for (const [key, vocabularyItems] of Object.entries(cache)) {
             const vocabularyItem = vocabularyItems.find((item: { value: string; }) => item.value === processedValue);
@@ -40,8 +45,14 @@ const FeatureInfoPopup: React.FC<FeatureInfoPopupProps> = ({ map, checkedLayerLi
         }
         return '';
     };
-
-
+    /**
+     * Function to add a filter to a specific layer
+     * 
+     * @param layerId - ID of the layer to which the filter is applied
+     * @param filterKey - Attribute key on which to filter
+     * @param value - Value used for filtering the attribute
+     * @returns void
+     */
     const handleAddFilter = useCallback((layerId: string, filterKey: string, value: string) => {
         const filter = {
             filterByAttribute: [{ key: filterKey, value: value }]
@@ -75,6 +86,7 @@ const FeatureInfoPopup: React.FC<FeatureInfoPopupProps> = ({ map, checkedLayerLi
         const canFilter = layer ? layer.canFilter : false;
 
         const featureElements = layerElement.getElementsByTagName('Feature');
+
         for (let i = 0; i < featureElements.length; i++) {
             const featureElement = featureElements[i];
             const attributes = featureElement.getElementsByTagName('Attribute');
@@ -159,7 +171,16 @@ const FeatureInfoPopup: React.FC<FeatureInfoPopupProps> = ({ map, checkedLayerLi
                 });
         });
     }, [map, checkedLayerListFeatures]);
-
+    /**
+     * Effect to handle the registration and cleanup of a single-click event on the map
+     * 
+     * This effect adds an event listener for the 'singleclick' event on the map when the component mounts or when the map or 
+     * singleClickHandler changes. It cleans up by removing the event listener when the component unmounts or when the dependencies change.
+     * 
+     * @param map
+     * @param singleClickHandler
+     * @returns
+     */
     useEffect(() => {
         if (!map) return;
         map.on('singleclick', singleClickHandler);
@@ -167,7 +188,13 @@ const FeatureInfoPopup: React.FC<FeatureInfoPopupProps> = ({ map, checkedLayerLi
             map.un('singleclick', singleClickHandler);
         };
     }, [map, singleClickHandler]);
-
+    /**
+     * Function to find an attribute override for a specific layer and column key
+     * 
+     * @param layerName - The name of the layer to search for
+     * @param colKey - The column key for which to find the attribute override
+     * @returns The attribute override if found, or null if not found
+     */
     const findAttributeOverride = (layerName: string, colKey: string) => {
         for (const layer of expandedLayerList) {
             if (layer.id === layerName) {

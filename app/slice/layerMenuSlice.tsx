@@ -2,10 +2,23 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { findLayerById } from '../utilities/LayerMenuUtilities';
 import { FiltersType } from '../enum/filterTypeEnum';
 
+/**
+* Represents an object that can be filtered based on specific criteria.
+*
+* The `Filterable` interface is used to define objects that have filtering capabilities.
+* It includes an optional `filters` property, which specifies the filtering criteria that can be applied to the object.
+*
+*/
 export interface Filterable {
   filters?: Filter;
 }
 
+/**
+*Defines the Layer to be added on the map with all the parameters that benefit the manipulation and updating of them:
+* 
+*Details:
+* - isIndeterminate indicates whether all children are checked or not, modifying the check icon accordingly. 
+*/
 export interface Layer extends Filterable {
   id: string;
   label: string;
@@ -21,7 +34,9 @@ export interface Layer extends Filterable {
   zIndex?: number;
   attributesConfiguration?: AttributesConfiguration;
 }
-
+/**
+* Defines the type of filter that can be applied to the layer.
+*/
 export interface Filter {
   filterByAttribute?: FilterByAttribute[];
   filterByTectoUnitsTerm?: FilterByTectoUnitsTermItem[];
@@ -34,33 +49,50 @@ export interface Filter {
   vocabulary_label: string;
 } */
 
+/**
+ * Interface representing an override for an attribute's configuration
+ * 
+ */
 export interface AttributeOverride {
   column?: string;
   type?: 'text' | 'link';
   labelSourceForLink?: 'link' | 'vocabulary_label';
 }
 
-export interface AttributesConfiguration {
-  attributes?: string[];
-  attributeOverrides?: Record<string, AttributeOverride>;
-}
-
-export interface FilterByAttribute {
-  key: string;
-  value: string;
-}
 export interface FilterByTectoUnitsTermItem {
   term: string;
   includeNarrowers: boolean;
   narrowers?: string[];
 }
 
+/**
+ * Interface representing a filter configuration for tectonic units
+ * 
+ * This interface defines the configuration for filtering based on tectonic units. 
+ * It includes the vocabulary ID, a query for narrower terms, and a list of attributes to be filtered.
+ * 
+ * @property idVocabulary 
+ * @property queryNarrower - The SPARQL query to find narrower terms
+ * @property attributeToFilter
+ */
 export interface FilterTectoUnitsTerm {
   idVocabulary: string;
   queryNarrower: string;
   attributeToFilter: string[];
 }
-
+/**
+ * Interface representing a filter configuration for chronostratigraphy age
+ * 
+ * This interface defines the configuration for filtering based on chronostratigraphy age. 
+ * It includes the vocabulary ID, queries for different age ranges, and identifiers for older and younger ages.
+ * 
+ * @property idVocabulary 
+ * @property queryBetween - The SPARQL query to filter between a range of ages
+ * @property queryYounger - The SPARQL query to filter for younger ages
+ * @property queryOlder - The SPARQL query to filter for older ages
+ * @property idOlder
+ * @property idYounger
+ */
 export interface FilterChronostratigraphyAge {
   idVocabulary: string;
   queryBetween: string;
@@ -69,7 +101,37 @@ export interface FilterChronostratigraphyAge {
   idOlder: string;
   idYounger: string;
 }
-
+/**
+ * Configuration for managing attributes in a layer.
+ * 
+ * The `AttributesConfiguration` interface defines how attributes are configured and overridden for a specific layer.
+ * It includes the following properties:
+ * 
+ * - `attributes` (optional): An array of attribute names that are associated with the layer. These attributes define the properties
+ *   or fields available in the layer.
+ * 
+ * - `attributeOverrides` (optional): A record where each key is an attribute name and each value is an `AttributeOverride` object.
+ *   This allows for customization or overriding of attribute settings, such as changing display labels or specifying different types
+ *   for attributes.
+ * 
+ * This interface is used to provide detailed configuration options for attributes, including default attributes and any customizations
+ * required for specific use cases or display requirements.
+ * 
+ */
+export interface AttributesConfiguration {
+  attributes?: string[];
+  attributeOverrides?: Record<string, AttributeOverride>;
+}
+/**
+* Filter type characterized by key and value.
+*/
+export interface FilterByAttribute {
+  key: string;
+  value: string;
+}
+/**
+* Defines properties for adding a filter to a layer.
+*/
 export interface FilterConfiguration {
   layerName: string;
   filterConfigurationByAttribute?: { key: string; label: string }[];
@@ -77,27 +139,38 @@ export interface FilterConfiguration {
   filterChronostratigraphyAge?: FilterChronostratigraphyAge;
   filterLayer?: Layer;
 }
-
-
+/**
+* Defines layer state properties at the application level.
+*/
 export interface LayerState {
   layers: Layer[];
   iconFilterLayers: string | undefined;
   /* columnOverrideAttribute?: string[]; */
 }
-
+/**
+* Defines the properties that make up the sources to call up the various layers to be displayed on the map.
+*/
 export interface Source {
   url: string,
   params: Record<string, string | boolean>,
   serverType: string,
   crossOrigin: string,
 }
-
+/**
+* Defines the style of the layers. 
+*/
 export interface Style {
   opacity: number;
 }
 
-/* iNTERFACCIA FILTER INITIAL STATE SENZA FILTRI */
-
+/* INTERFACE FILTER INITIAL STATE WITHOUT FILTERS */
+/**
+*Initial status of the application:
+* Contains:
+* - layer
+* - source of the layers.
+* - initial style of the layers.
+*/
 const initialState: LayerState = {
   layers: [
     {
@@ -106,6 +179,7 @@ const initialState: LayerState = {
       isChecked: true,
       canFilter: false,
       canGetFeatureInfo: false,
+      isIndeterminate: true,
       children: [{
         id: 'Tecto_Lines',
         label: 'Tectonic Lines',
@@ -151,7 +225,6 @@ const initialState: LayerState = {
             queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/TectonicUnits/>\n\nSELECT ?narrowerConcept\n\nWHERE { \nex:${term} skos:narrower+ ?narrowerConcept.\n}',
             attributeToFilter: ['Tecto_lexic']
           },
-
           filterLayer: {
             id: 'Tecto_Units_augm_filtered',
             label: 'Tecto_Units_augm_filtered',
@@ -296,68 +369,91 @@ const initialState: LayerState = {
   iconFilterLayers: undefined,
 };
 
-
 export const layerMenuSlice = createSlice({
   name: 'layersMenuSlice',
   initialState,
   reducers: {
+    /**
+     *  Manages and updates the state of checked layers by cycling on both parent and child layers.
+     * 
+     * @param state state of layer 
+     * @param action payloadAction is the data passed by the component
+     */
     toggleCheck: (state, action: PayloadAction<string>) => {
       console.log("Toggling layer:", action.payload);
 
       const updateIndeterminateStatus = (layer: Layer): Layer => {
         if (!layer.children) return layer;
-
         const totalChildren = layer.children.length;
         const checkedChildren = layer.children.filter(child => child.isChecked).length;
-
         layer.isIndeterminate = checkedChildren > 0 && checkedChildren < totalChildren;
-
-        layer.children.forEach(child => updateIndeterminateStatus(child));
+        layer.children = layer.children.map(updateIndeterminateStatus);
         return layer;
       };
 
-      const toggleLayerAndChildren = (layer: Layer): Layer => {
-        if (layer.id === action.payload) {
-          if (!layer.children) {
-            return { ...layer, isChecked: !layer.isChecked };
+      const updateFilterLayer = (layer: Layer, isChecked: boolean): Layer => {
+        if (layer.canFilter && layer.filterConfiguration && layer.filterConfiguration.filterLayer) {
+          layer.filterConfiguration.filterLayer.isChecked = isChecked;
+        }
+        return layer;
+      };
+
+      const toggleLayerAndChildren = (layer: Layer, targetId: string): Layer => {
+        if (layer.id === targetId) {
+          const newIsChecked = !layer.isChecked;
+          let updatedLayer = updateFilterLayer(layer, newIsChecked);
+
+          if (!updatedLayer.children) {
+            return { ...updatedLayer, isChecked: newIsChecked };
           } else {
-            const updatedLayer = {
-              ...layer,
-              isChecked: !layer.isChecked,
-              children: layer.children.map(child => ({ ...child, isChecked: !layer.isChecked }))
+            return {
+              ...updatedLayer,
+              isChecked: newIsChecked,
+              children: updatedLayer.children.map(child => {
+                const updatedChild = { ...child, isChecked: newIsChecked };
+                return updateFilterLayer(updatedChild, newIsChecked);
+              })
             };
-            return updatedLayer;
           }
         }
 
         if (layer.children) {
-          const updatedChildren = layer.children.map(child => {
-            if (child.id === action.payload) {
-              return { ...child, isChecked: !child.isChecked };
-            }
-            return child;
-          });
-
+          const updatedChildren = layer.children.map(child => toggleLayerAndChildren(child, targetId));
           const atLeastOneChildChecked = updatedChildren.some(child => child.isChecked);
 
-          if (atLeastOneChildChecked) {
-            return { ...layer, isChecked: true, children: updatedChildren };
-          }
-
-          return { ...layer, isChecked: false, children: updatedChildren };
+          return {
+            ...layer,
+            isChecked: atLeastOneChildChecked,
+            children: updatedChildren
+          };
         }
 
         return layer;
       };
 
-      state.layers = state.layers.map(toggleLayerAndChildren).map(updateIndeterminateStatus);
+      state.layers = state.layers.map(layer => toggleLayerAndChildren(layer, action.payload))
+        .map(updateIndeterminateStatus);
     },
+    /**
+     * Changes the status that allows the filter icon to update appropriately if there are active filters on a given layer.
+     * 
+     * @param state state of layer 
+     * @param action payloadAction is the data passed by the component 
+     */
     toggleFilter: (state, action: PayloadAction<string | undefined>) => {
       state.iconFilterLayers = action.payload;
     },
+
+    /**
+     * ASllows a filter to be added to a given layer found by id
+     * 
+     * @param state state of layer 
+     * @param action payloadAction is the data passed by the component 
+     * @returns the updated state
+     */
     addFilter: (state, action: PayloadAction<{ layerId: string, filter: Filter, filterType: FiltersType }>) => {
       const { layerId, filter, filterType } = action.payload;
-      console.log('Aggiunta filtro al layer con ID:', layerId);
+      console.log('Add filter on layer with ID:', layerId, 'Filter details:', filter, 'Filter type:', filterType);
 
       const layer = findLayerById(state.layers, layerId);
 
@@ -368,7 +464,6 @@ export const layerMenuSlice = createSlice({
 
         switch (filterType) {
           case 'filterByAttribute':
-            console.log('Aggiungendo filtroByAttribute al layer:', filter);
             if (!layer.filters.filterByAttribute) {
               layer.filters.filterByAttribute = [];
             }
@@ -378,10 +473,10 @@ export const layerMenuSlice = createSlice({
 
               if (existingFilterIndex !== -1) {
                 layer.filters.filterByAttribute[existingFilterIndex].value = filter.filterByAttribute[0]?.value;
-                console.log('Filtro aggiornato:', filter.filterByAttribute);
+                console.log('Filter Update:', filter.filterByAttribute, ', Layer id:', layerId);
               } else {
                 layer.filters.filterByAttribute.push(...filter.filterByAttribute);
-                console.log('Filtro aggiunto:', filter.filterByAttribute);
+                console.log('Add Filter:', filter.filterByAttribute, ', on layer id: ', layerId);
               }
             }
             break;
@@ -407,16 +502,18 @@ export const layerMenuSlice = createSlice({
             break;
         }
 
-        /* if (layer.filterConfiguration?.filterLayer) {
-          layer.filterConfiguration.filterLayer.isChecked = true;
-        } */
-
       } else {
-        console.error('Layer non trovato o filtro non valido');
+        console.error('Layer not found or filter is incorrect.');
       }
       return state;
     },
 
+    /**
+     * Allows a filter to be removed from a given layer by id
+     * 
+     * @param state state of layer 
+     * @param action payloadAction is the data passed by the component 
+     */
     removeFilter: (state, action: PayloadAction<{ layerId: string, filterKey: string }>) => {
       const { layerId, filterKey } = action.payload;
 
@@ -437,6 +534,12 @@ export const layerMenuSlice = createSlice({
       }
     },
 
+    /**
+     * Updates with values passed by the component the opacity value of a given layer found by id
+     * 
+     * @param state state of layer 
+     * @param action payloadAction is the data passed by the component 
+     */
     updateOpacity(state, action: PayloadAction<{ layerId: string; opacity: number }>) {
       const { layerId, opacity } = action.payload;
 
@@ -461,6 +564,16 @@ export const layerMenuSlice = createSlice({
       };
       updateOpacityRecursive(state.layers);
     },
+    /**
+     * Action to update the attributes configuration for a specific layer
+     * 
+     * This action updates the `attributesConfiguration` of a layer in the Redux store state. 
+     * It first retrieves the layer using `findLayerById` based on the provided `layerId`. 
+     * If the layer is found, it initializes the `attributesConfiguration` object if it doesn't already exist,
+     * and updates its `attributes` property with the new array of attributes provided in the action payload.
+     * If the layer is not found, an error message is logged to the console.
+     * 
+     */
     setAttributesConfiguration: (
       state,
       action: PayloadAction<{ layerId: string; attributes: string[] }>
@@ -478,7 +591,6 @@ export const layerMenuSlice = createSlice({
         console.error('Layer non trovato');
       }
     },
-
   }
 });
 
