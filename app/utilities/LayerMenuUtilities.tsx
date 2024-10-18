@@ -70,7 +70,8 @@ export const filtersNotEmpty = (filters: Filter | undefined): boolean => {
     return filters != undefined &&
         (
             (filters.filterByAttribute != undefined && filters.filterByAttribute.length > 0) ||
-            (filters.filterByTectoUnitsTerm != undefined && filters.filterByTectoUnitsTerm.length > 0)
+            (filters.filterByTectoUnitsTerm != undefined && filters.filterByTectoUnitsTerm.length > 0) ||
+            (filters.filterChronostratigraphyAge != undefined && filters.filterChronostratigraphyAge.length > 0)
         );
 }
 

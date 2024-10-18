@@ -2,6 +2,7 @@
     height: 100vh;
     min-width: 300px;
     padding: 20px;
+    overflow-y: auto;
 }
 
 .bgGrey {
@@ -14,6 +15,9 @@
 
 .textBlack {
     color: black;
+}
+.mTop2 {
+    margin-top: 2%;
 }
 
 .mTop4 {

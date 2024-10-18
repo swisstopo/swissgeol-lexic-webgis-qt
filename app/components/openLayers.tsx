@@ -15,7 +15,12 @@ import { createExpansLayersList, getFeaturesLayers, getSourceById } from '../uti
 import { createQueryString } from '../utilities/StringCreateFilter';
 import FeatureInfoPopup from './featureInfoPopup';
 import { setAttributesConfiguration } from '../slice/layerMenuSlice';
+import proj4 from 'proj4';
+import { register } from 'ol/proj/proj4.js';
 
+
+proj4.defs("EPSG:2056", "+proj=somerc +lat_0=46.9524055555556 +lon_0=7.43958333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs +type=crs");
+register(proj4);
 
 /**
  * The map that contains layer ids and tileLayer
@@ -81,6 +86,7 @@ const MapComponent: React.FC = () => {
      */
     const featuredFilterableLayers = expandedLayerListFiltered.filter(layer => layer.canGetFeatureInfo);
     const dispatch = useDispatch();
+    const defaultExtend = [2479999.9701, 1061999.6351, 2865002.5601, 1302018.7201];
     /**
     * Creates the expanded list of layers by setting the layerTilesMap.
     * 
@@ -105,6 +111,7 @@ const MapComponent: React.FC = () => {
                         tileLayer.setZIndex(layer.zIndex);
                     }
                     tileLayers[layer.id] = tileLayer;
+                    console.log(tileLayer);
                 }
             }
         });
@@ -172,10 +179,11 @@ const MapComponent: React.FC = () => {
             layers: [],
             view: new View({
                 //in order: longitude, latitude
-                center: [915788.3813658266, 5909670.533831278],
+                center: [2660013.54, 1185171.98],
                 zoom: 8.6,
                 minZoom: 0,
                 maxZoom: 28,
+                projection: 'EPSG:2056'
             }),
             controls: defaults({ attribution: false }).extend([
                 new Attribution({
@@ -186,15 +194,12 @@ const MapComponent: React.FC = () => {
                 new ScaleLine(),
                 new ZoomToExtent({
                     label: 'D',
-                    extent: new View({
-                        center: [915788.3813658266, 5909670.533831278],
-                        zoom: 5,
-                    }).getViewStateAndExtent().extent
+                    extent: defaultExtend,
                 }),
                 new Rotate(),
             ]),
         });
-
+        newMap.getView().fit(defaultExtend);
         setMap(newMap);
 
         const layersToAdd = checkedLayers.filter(layer => {
@@ -336,7 +341,7 @@ const MapComponent: React.FC = () => {
             const url = source.getFeatureInfoUrl(
                 center,
                 viewResolution,
-                'EPSG:3857',
+                'EPSG:2056',
                 { 'INFO_FORMAT': 'text/xml' }
             );
             if (!url) return;

@@ -12,8 +12,11 @@ export const createQueryString = (layer: Layer): string => {
         const layerId = layer.filterConfiguration?.layerName;
         const byAttributeList = layer.filters?.filterByAttribute;
         const tectoTermsList = layer.filters?.filterByTectoUnitsTerm;
+        const chronostratigraphyTermsList = layer.filters?.filterChronostratigraphyAge;
 
         const conditions: string[] = [];
+
+
 
         // Filtering by value/key attributes
         if (byAttributeList && byAttributeList.length > 0) {
@@ -47,15 +50,48 @@ export const createQueryString = (layer: Layer): string => {
                 });
 
                 if (tectoConditions.length > 1) {
-                    conditions.push(`(${tectoConditions.join(' OR ')})`);
+                    conditions.push(`( ${tectoConditions.join(' OR ')} )`);
                 } else {
                     conditions.push(tectoConditions[0]);
                 }
             }
         }
 
+        // Filtering by chronostratigraphy term
+        if (chronostratigraphyTermsList && chronostratigraphyTermsList.length > 0) {
+            const chronoConditions: string[] = [];
+            const columnOld = layer.filterConfiguration?.filterChronostratigraphyAge?.columnToFilterOld;
+            const columnYon = layer.filterConfiguration?.filterChronostratigraphyAge?.columnToFilterYon;
+
+            chronostratigraphyTermsList.forEach(termItem => {
+                const { type, olderTerms, youngerTerms, betweenTerms } = termItem;
+
+                if (type === 'old' && olderTerms && olderTerms.length > 0) {
+                    const formattedOlderTerms = olderTerms.map(term => `\'${term}\'`).join(' , ');
+                    chronoConditions.push(`"${columnOld}" IN ( ${formattedOlderTerms} )`);
+                } else if (type === 'yon' && youngerTerms && youngerTerms.length > 0) {
+                    const formattedYoungerTerms = youngerTerms.map(term => `\'${term}\'`).join(' , ');
+                    chronoConditions.push(`"${columnYon}" IN ( ${formattedYoungerTerms} )`);
+                } else if (type === 'bet' && betweenTerms && betweenTerms.length > 0) {
+                    const formattedBetweenTerms = betweenTerms.map(term => `\'${term}\'`).join(' , ');
+                    chronoConditions.push(`"${columnOld}" IN ( ${formattedBetweenTerms} )`);
+                    chronoConditions.push(`"${columnYon}" IN ( ${formattedBetweenTerms} )`);
+                }
+            });
+
+            if (chronoConditions.length > 1) {
+                conditions.push(`( ${chronoConditions.join(' AND ')} )`);
+            } else {
+                conditions.push(chronoConditions[0]);
+            }
+        }
+        console.log('Layer filters:', layer.filters);
+        console.log('Chrono terms:', chronostratigraphyTermsList);
+        console.log('Conditions:', conditions);
         queryString = conditions.length > 0 ? `${layerId}:${conditions.join(' AND ')}` : '';
     }
+
+
 
     console.log('CREATESTRINGQUERY: ' + queryString);
     return queryString;

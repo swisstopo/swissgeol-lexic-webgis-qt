@@ -8,12 +8,12 @@ interface Literal {
     value: string;
     language?: string;
 }
-interface QueryResult {
+interface VocabularyQueryResult  {
     term: NamedNode;
     prefLabel: Literal;
 }
-interface QueryResultNarrowers {
-    narrowerConcept: NamedNode;
+interface ConceptQueryResult   {
+    concept: NamedNode;
 }
 /**
  * Creates the connection to the db with the parameters passed 
@@ -33,18 +33,11 @@ export async function fetchVocabulariesData() {
         const { allConcept } = getQueryConfig(vocab.id);
         const queryExecutor = new QueryExecutor(client, vocab.repositoryId, url, username, password, repositoryUrl);
 
-        let sparqlQuery = '';
-
-        if (vocab.id === 'Chronostratigraphy' || vocab.id === 'TectonicUnits') {
-            sparqlQuery = allConcept;
-        } else {
-            console.warn(`No SPARQL query defined for vocabulary ${vocab.id}`);
-            continue;
-        }
+        let sparqlQuery = allConcept;
 
         try {
             console.log(`5 Executing SPARQL query for vocabulary ${vocab.id}`);
-            const queryResults: QueryResult[] = await queryExecutor.executeSparqlQuery(sparqlQuery);
+            const queryResults: VocabularyQueryResult [] = await queryExecutor.executeSparqlQuery(sparqlQuery);
             /* console.log('Query results:', queryResults); */
             results[vocab.id] = queryResults.map(result => ({
                 label: result.prefLabel.value,
@@ -88,12 +81,12 @@ export async function fetchVocabolaryTermByQuery(query: string, vocabId: string)
 
             try {
                 console.log(`7 Executing SPARQL query for vocabulary ${vocab.id}`);
-                const queryResults: QueryResultNarrowers[] = await queryExecutor.executeSparqlQuery(sparqlQuery);
-                console.log('Query results:', queryResults);
+                const queryResults: ConceptQueryResult [] = await queryExecutor.executeSparqlQuery(sparqlQuery);
+                console.log(`Query results ${vocab.id}:`, queryResults);
                 for (const result of queryResults) {
-                    results.push(result.narrowerConcept.id);
+                    results.push(result.concept.id);
                 }
-                /* console.log(`Successfully fetched data for vocabulary ${vocab.id}:`, results[vocab.id]); */
+                console.log(`Successfully fetched data for ${vocab.id}:`, results);
             } catch (error) {
                 console.log(`Error fetching data for vocabulary ${vocab.id}:`, error);
                 throw new Error(`Error fetching data for vocabulary ${vocab.id}: ${error.message}`);

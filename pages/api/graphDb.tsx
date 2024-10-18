@@ -22,7 +22,7 @@ import { fetchVocabolaryTermByQuery, fetchVocabulariesData } from '../../app/lib
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     let { vocabulary } = req.query;
     let query = req.body;
-    
+
     if (Array.isArray(vocabulary)) {
         vocabulary = vocabulary[0];
     }
@@ -33,7 +33,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (query && vocabulary) {
         if (req.method === 'POST') {
             try {
-                const data = await fetchVocabolaryTermByQuery(query, vocabulary);
+                let data;
+                data = await fetchVocabolaryTermByQuery(query, vocabulary);
                 res.status(200).json(data);
             } catch (error) {
                 console.error('Failed to fetch data from GraphDB:', error);

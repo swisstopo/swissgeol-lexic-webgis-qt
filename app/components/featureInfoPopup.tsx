@@ -144,7 +144,7 @@ const FeatureInfoPopup: React.FC<FeatureInfoPopupProps> = ({ map, checkedLayerLi
             const url = source.getFeatureInfoUrl(
                 coordinate,
                 viewResolution,
-                'EPSG:3857',
+                'EPSG:2056',
                 { 'INFO_FORMAT': 'text/xml' }
             );
             if (!url) return;

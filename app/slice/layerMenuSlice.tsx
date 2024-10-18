@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { findLayerById } from '../utilities/LayerMenuUtilities';
-import { FiltersType } from '../enum/filterTypeEnum';
+import { FilterOptionChronostratigraphy, FiltersType } from '../enum/filterTypeEnum';
 
 /**
 * Represents an object that can be filtered based on specific criteria.
@@ -40,7 +40,7 @@ export interface Layer extends Filterable {
 export interface Filter {
   filterByAttribute?: FilterByAttribute[];
   filterByTectoUnitsTerm?: FilterByTectoUnitsTermItem[];
-  filterChronostratigraphyAge?: FilterChronostratigraphyAge[]
+  filterChronostratigraphyAge?: FilterChronostratigraphyAgeItem[]
 }
 
 /* export interface LinkLabelItem {
@@ -93,13 +93,21 @@ export interface FilterTectoUnitsTerm {
  * @property idOlder
  * @property idYounger
  */
+export interface FilterChronostratigraphyAgeItem {
+  type: string;
+  idOlder?: string;
+  idYounger?: string;
+  olderTerms?: string[];
+  youngerTerms?: string[];
+  betweenTerms?: string[];
+}
+
 export interface FilterChronostratigraphyAge {
-  idVocabulary: string;
-  queryBetween: string;
-  queryYounger: string;
-  queryOlder: string
-  idOlder: string;
-  idYounger: string;
+  queryYouger_strict: string,
+  queryOlder_strict: string,
+  queryBetween_stricty: string,
+  columnToFilterYon: string,
+  columnToFilterOld: string,
 }
 /**
  * Configuration for managing attributes in a layer.
@@ -195,7 +203,7 @@ const initialState: LayerState = {
         style: {
           opacity: 0.3,
         },
-        zIndex: 7,
+        zIndex: 9,
       }, {
         id: 'Quat_Surfaces',
         label: 'Quat Surfaces',
@@ -211,7 +219,7 @@ const initialState: LayerState = {
         style: {
           opacity: 0.3,
         },
-        zIndex: 6,
+        zIndex: 8,
       }, {
         id: 'Tecto_Units_augm',
         label: 'Tectonic Units',
@@ -220,9 +228,16 @@ const initialState: LayerState = {
         filters: undefined,
         filterConfiguration: {
           layerName: 'Tecto_Units_augm_filtered',
+          filterChronostratigraphyAge: {
+            columnToFilterOld: 'Chrono_from_lexic',
+            columnToFilterYon: 'Chrono_to_lexic',
+            queryYouger_strict: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  BIND(ex:${term} AS ?subject)\n  {\n   ?subject time:intervalMeets* ?concept .\n  } UNION {\n   ?subject time:intervalFinishedBy+ ?narrower .\n   ?subject time:intervalMeets* ?younger .\n   ?younger skos:narrower* ?concept .\n  } UNION {\n   ?subject time:intervalStarts* ?concept .\n   } UNION {\n   ?subject skos:broader+ ?broader .\n   ?broader time:intervalMeets+ ?concept .\n  }\n}",
+            queryOlder_strict: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  BIND(ex:${term} AS ?subject)\n  {\n   ?subject time:intervalMetBy* ?concept .\n  } UNION {\n   ?subject time:intervalMetBY* ?older .\n   ?older skos:narrower* ?concept .\n  } UNION {\n   ?subject time:intervalFinishes* ?concept .\n  } UNION {\n   ?subject skos:broader+ ?broader .\n ?broader time:intervalMetBy+ ?concept\n }\n}",
+            queryBetween_stricty: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  {\n   BIND(ex:${termOlder} AS ?olderConcept) {\n  ?olderConcept time:intervalMeets* ?concept .\n } UNION {\n   ?olderConcept time:intervalMeets* ?younger .\n   ?younger skos:narrower* ?concept .\n } UNION {\n   ?olderConcept time:intervalStarts* ?concept .\n  } UNION {\n   ?olderSub skos:broader+ ?broader .\n   ?broader time:intervalMeets+ ?object .\n  }\n }\n {\n  BIND(ex:${termYounger} AS ?youngerConcept) {\n   ?youngerConcept time:intervalMetBy* ?concept .\n  } UNION {\n   ?youngerConcept time:intervalMetBy* ?older .\n ?older skos:narrower* ?concept .\n  } UNION {\n   ?youngerConcept time:intervalFinishes* ?concept .\n   } UNION {\n   ?youngerConcept skos:broader+ ?broader .\n   ?broader time:intervalMetBy+ ?concept .\n  }\n }\n}",
+          },
           filterConfigurationByTectoUnitsTerm: {
             idVocabulary: 'TectonicUnits',
-            queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/TectonicUnits/>\n\nSELECT ?narrowerConcept\n\nWHERE { \nex:${term} skos:narrower+ ?narrowerConcept.\n}',
+            queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/TectonicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
             attributeToFilter: ['Tecto_lexic']
           },
           filterLayer: {
@@ -241,9 +256,9 @@ const initialState: LayerState = {
               crossOrigin: 'anonymous',
             },
             style: {
-              opacity: 0.3,
+              opacity: 1.0,
             },
-            zIndex: 5,
+            zIndex: 7,
           },
         },
         canGetFeatureInfo: true,
@@ -256,7 +271,7 @@ const initialState: LayerState = {
         style: {
           opacity: 0.3,
         },
-        zIndex: 4,
+        zIndex: 6,
         attributesConfiguration: {
           attributeOverrides: {
             Tecto_lexic: {
@@ -275,7 +290,7 @@ const initialState: LayerState = {
               labelSourceForLink: 'vocabulary_label',
             },
           },
-        }
+        },
       }],
     },
     {
@@ -293,6 +308,18 @@ const initialState: LayerState = {
         filters: undefined,
         filterConfiguration: {
           layerName: 'GC_BEDROCK_filtered',
+          filterChronostratigraphyAge: {
+            columnToFilterOld: 'chrono_from_lexic',
+            columnToFilterYon: 'chrono_to_lexic',
+            queryYouger_strict: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  BIND(ex:${term} AS ?subject)\n  {\n   ?subject time:intervalMeets* ?concept .\n  } UNION {\n   ?subject time:intervalFinishedBy+ ?narrower .\n   ?subject time:intervalMeets* ?younger .\n   ?younger skos:narrower* ?concept .\n  } UNION {\n   ?subject time:intervalStarts* ?concept .\n   } UNION {\n   ?subject skos:broader+ ?broader .\n   ?broader time:intervalMeets+ ?concept .\n  }\n}",
+            queryOlder_strict: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  BIND(ex:${term} AS ?subject)\n  {\n   ?subject time:intervalMetBy* ?concept .\n  } UNION {\n   ?subject time:intervalMetBY* ?older .\n   ?older skos:narrower* ?concept .\n  } UNION {\n   ?subject time:intervalFinishes* ?concept .\n  } UNION {\n   ?subject skos:broader+ ?broader .\n ?broader time:intervalMetBy+ ?concept\n }\n}",
+            queryBetween_stricty: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  {\n   BIND(ex:${termOlder} AS ?olderConcept) {\n  ?olderConcept time:intervalMeets* ?concept .\n } UNION {\n   ?olderConcept time:intervalMeets* ?younger .\n   ?younger skos:narrower* ?concept .\n } UNION {\n   ?olderConcept time:intervalStarts* ?concept .\n  } UNION {\n   ?olderSub skos:broader+ ?broader .\n   ?broader time:intervalMeets+ ?object .\n  }\n }\n {\n  BIND(ex:${termYounger} AS ?youngerConcept) {\n   ?youngerConcept time:intervalMetBy* ?concept .\n  } UNION {\n   ?youngerConcept time:intervalMetBy* ?older .\n ?older skos:narrower* ?concept .\n  } UNION {\n   ?youngerConcept time:intervalFinishes* ?concept .\n   } UNION {\n   ?youngerConcept skos:broader+ ?broader .\n   ?broader time:intervalMetBy+ ?concept .\n  }\n }\n}",
+          },
+          filterConfigurationByTectoUnitsTerm: {
+            idVocabulary: 'TectonicUnits',
+            queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/TectonicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
+            attributeToFilter: ['tecto_lexic']
+          },
           filterLayer: {
             id: 'GC_BEDROCK_filtered',
             label: 'GC_BEDROCK_filtered',
@@ -309,9 +336,9 @@ const initialState: LayerState = {
               crossOrigin: 'anonymous',
             },
             style: {
-              opacity: 0.3,
+              opacity: 1.0,
             },
-            zIndex: 3,
+            zIndex: 5,
           },
         },
         canGetFeatureInfo: true,
@@ -326,7 +353,94 @@ const initialState: LayerState = {
         style: {
           opacity: 0.3,
         },
+        zIndex: 4,
+        attributesConfiguration: {
+          attributeOverrides: {
+            tecto_lexic: {
+              column: 'tecto_lexic',
+              type: 'link',
+              labelSourceForLink: 'vocabulary_label',
+            },
+            chrono_from_lexic: {
+              column: 'chrono_from_lexic',
+              type: 'link',
+              labelSourceForLink: 'vocabulary_label',
+            },
+            chrono_to_lexic: {
+              column: 'chrono_to_lexic',
+              type: 'link',
+              labelSourceForLink: 'vocabulary_label',
+            },
+          },
+        },
+      }, {
+        id: 'GC_UNCO_DEPOSITS',
+        label: 'GC_UNCO_DEPOSITS',
+        isChecked: false,
+        canFilter: true,
+        filters: undefined,
+        filterConfiguration: {
+          layerName: 'GC_UNCO_DEPOSITS_filtered',
+          filterChronostratigraphyAge: {
+            columnToFilterOld: 'chrono_from_lexic',
+            columnToFilterYon: 'chrono_to_lexic',
+            queryYouger_strict: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  BIND(ex:${term} AS ?subject)\n  {\n   ?subject time:intervalMeets* ?concept .\n  } UNION {\n   ?subject time:intervalFinishedBy+ ?narrower .\n   ?subject time:intervalMeets* ?younger .\n   ?younger skos:narrower* ?concept .\n  } UNION {\n   ?subject time:intervalStarts* ?concept .\n   } UNION {\n   ?subject skos:broader+ ?broader .\n   ?broader time:intervalMeets+ ?concept .\n  }\n}",
+            queryOlder_strict: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  BIND(ex:${term} AS ?subject)\n  {\n   ?subject time:intervalMetBy* ?concept .\n  } UNION {\n   ?subject time:intervalMetBY* ?older .\n   ?older skos:narrower* ?concept .\n  } UNION {\n   ?subject time:intervalFinishes* ?concept .\n  } UNION {\n   ?subject skos:broader+ ?broader .\n ?broader time:intervalMetBy+ ?concept\n }\n}",
+            queryBetween_stricty: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  {\n   BIND(ex:${termOlder} AS ?olderConcept) {\n  ?olderConcept time:intervalMeets* ?concept .\n } UNION {\n   ?olderConcept time:intervalMeets* ?younger .\n   ?younger skos:narrower* ?concept .\n } UNION {\n   ?olderConcept time:intervalStarts* ?concept .\n  } UNION {\n   ?olderSub skos:broader+ ?broader .\n   ?broader time:intervalMeets+ ?object .\n  }\n }\n {\n  BIND(ex:${termYounger} AS ?youngerConcept) {\n   ?youngerConcept time:intervalMetBy* ?concept .\n  } UNION {\n   ?youngerConcept time:intervalMetBy* ?older .\n ?older skos:narrower* ?concept .\n  } UNION {\n   ?youngerConcept time:intervalFinishes* ?concept .\n   } UNION {\n   ?youngerConcept skos:broader+ ?broader .\n   ?broader time:intervalMetBy+ ?concept .\n  }\n }\n}",
+          },
+          filterLayer: {
+            id: 'GC_UNCO_DEPOSITS_filtered',
+            label: 'GC_UNCO_DEPOSITS_filtered',
+            isChecked: false,
+            canFilter: false,
+            canGetFeatureInfo: false,
+            source: {
+              url: 'https://qgis.swisstopo.demo.epsilon-italia.it/qgis-server/',
+              params: {
+                'LAYERS': 'GC_UNCO_DEPOSITS_filtered', 'TILED': true,
+                'FILTER': 'GC_UNCO_DEPOSITS_filtered:1=0'
+              },
+              serverType: 'qgis',
+              crossOrigin: 'anonymous',
+            },
+            style: {
+              opacity: 1.0,
+            },
+            zIndex: 3,
+          },
+        },
+        canGetFeatureInfo: true,
+        source: {
+          url: 'https://qgis.swisstopo.demo.epsilon-italia.it/qgis-server/',
+          params: {
+            'LAYERS': 'GC_UNCO_DEPOSITS',
+          },
+          serverType: 'qgis',
+          crossOrigin: 'anonymous',
+        },
+        style: {
+          opacity: 0.3,
+        },
         zIndex: 2,
+        attributesConfiguration: {
+          attributeOverrides: {
+            Tecto_lexic: {
+              column: 'Tecto_lexic',
+              type: 'link',
+              labelSourceForLink: 'vocabulary_label',
+            },
+            Chrono_from_lexic: {
+              column: 'Chrono_from_lexic',
+              type: 'link',
+              labelSourceForLink: 'vocabulary_label',
+            },
+            Chrono_to_lexic: {
+              column: 'Chrono_to_lexic',
+              type: 'link',
+              labelSourceForLink: 'vocabulary_label',
+            },
+          },
+        },
       },],
     },
     {
@@ -498,6 +612,28 @@ export const layerMenuSlice = createSlice({
               }
             }
             break;
+          case 'filterByChronostratigraphy':
+            console.log('Aggiungendo filterByChronostratigraphy al layer:', filter);
+            if (!layer.filters.filterChronostratigraphyAge) {
+              layer.filters.filterChronostratigraphyAge = [];
+            }
+
+            if (filter.filterChronostratigraphyAge) {
+              const filterChronostratigraphyAgeArray = filter.filterChronostratigraphyAge as FilterChronostratigraphyAgeItem[];
+              const existingFilterIndex = layer.filters.filterChronostratigraphyAge.findIndex(f =>
+                f.idYounger === filterChronostratigraphyAgeArray[0]?.idYounger &&
+                f.idOlder === filterChronostratigraphyAgeArray[0]?.idOlder
+              );
+
+              if (existingFilterIndex !== -1) {
+                layer.filters.filterChronostratigraphyAge[existingFilterIndex] = filterChronostratigraphyAgeArray[0];
+                console.log('Filtro aggiornato:', filter.filterChronostratigraphyAge);
+              } else {
+                layer.filters.filterChronostratigraphyAge.push(...filterChronostratigraphyAgeArray);
+                console.log('Filtro aggiunto:', filter.filterChronostratigraphyAge);
+              }
+            }
+            break;
           default:
             break;
         }
@@ -514,26 +650,40 @@ export const layerMenuSlice = createSlice({
      * @param state state of layer 
      * @param action payloadAction is the data passed by the component 
      */
-    removeFilter: (state, action: PayloadAction<{ layerId: string, filterKey: string }>) => {
-      const { layerId, filterKey } = action.payload;
-
+    removeFilter: (
+      state,
+      action: PayloadAction<{
+        layerId: string;
+        filterKey?: string;
+        idYounger?: string;
+        idOlder?: string;
+        filterType?: FiltersType;
+        type?: string;
+      }>
+    ) => {
+      const { layerId, filterKey, idYounger, idOlder, filterType, type } = action.payload;
       const layerToUpdate = findLayerById(state.layers, layerId);
 
       if (layerToUpdate && layerToUpdate.filters) {
-        if (layerToUpdate.filters.filterByAttribute) {
-          layerToUpdate.filters.filterByAttribute = layerToUpdate.filters.filterByAttribute.filter(attr => attr.key !== filterKey);
+        if (filterType === FiltersType.FilterByChronostratigraphy) {
+          if (layerToUpdate.filters.filterChronostratigraphyAge) {
+            layerToUpdate.filters.filterChronostratigraphyAge = layerToUpdate.filters.filterChronostratigraphyAge.filter(attr =>
+              (type === FilterOptionChronostratigraphy.Older && attr.type === FilterOptionChronostratigraphy.Older && attr.idOlder === idOlder) ||
+                (type === FilterOptionChronostratigraphy.Younger && attr.type === FilterOptionChronostratigraphy.Younger && attr.idYounger === idYounger) ||
+                (type === FilterOptionChronostratigraphy.Between && attr.type === FilterOptionChronostratigraphy.Between && attr.idOlder === idOlder && attr.idYounger === idYounger) ? false : true
+            );
+          }
+        } else if (filterType === FiltersType.FilterByAttribute) {
+          if (layerToUpdate.filters.filterByAttribute) {
+            layerToUpdate.filters.filterByAttribute = layerToUpdate.filters.filterByAttribute.filter(attr => attr.key !== filterKey);
+          }
+        } else if (filterType === FiltersType.FilterByTectoUnitsTerm) {
+          if (layerToUpdate.filters.filterByTectoUnitsTerm) {
+            layerToUpdate.filters.filterByTectoUnitsTerm = layerToUpdate.filters.filterByTectoUnitsTerm.filter(term => term.term !== filterKey);
+          }
         }
-
-        if (layerToUpdate.filters.filterByTectoUnitsTerm) {
-          layerToUpdate.filters.filterByTectoUnitsTerm = layerToUpdate.filters.filterByTectoUnitsTerm.filter(term => term.term !== filterKey);
-        }
-
-        /* if (layerToUpdate.filters.filterByAttribute.length === 0 && layerToUpdate.filterConfiguration?.filterLayer) {
-          layerToUpdate.filterLayer.isChecked = false;
-        } */
       }
     },
-
     /**
      * Updates with values passed by the component the opacity value of a given layer found by id
      * 
@@ -597,4 +747,3 @@ export const layerMenuSlice = createSlice({
 export const { toggleCheck, addFilter, removeFilter, toggleFilter, updateOpacity, setAttributesConfiguration } = layerMenuSlice.actions;
 
 export default layerMenuSlice.reducer;
-
