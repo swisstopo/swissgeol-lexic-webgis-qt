@@ -11,7 +11,7 @@ import { boundingExtent } from 'ol/extent';
 import { Attribution, FullScreen, Rotate, ScaleLine, ZoomToExtent, defaults } from 'ol/control';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import { createExpansLayersList, getFeaturesLayers, getSourceById } from '../utilities/LayerMenuUtilities';
+import { configurePostWMS, createExpansLayersList, getFeaturesLayers, getSourceById } from '../utilities/LayerMenuUtilities';
 import { createQueryString } from '../utilities/StringCreateFilter';
 import FeatureInfoPopup from './featureInfoPopup';
 import { setAttributesConfiguration } from '../slice/layerMenuSlice';
@@ -91,7 +91,9 @@ const MapComponent: React.FC = () => {
     * Creates the expanded list of layers by setting the layerTilesMap.
     * 
     * This effect runs whenever the dependencies change. It initializes the `tileLayers` object
-    * based on the filtered list of layers and their ability to provide feature information. 
+    * based on the filtered list of layers and their ability to provide feature information.
+    * 
+    * Use a custom load function ('setTileLoadFunction' located in the configurePostWMS function) that turns the default GET into a POST request
     */
     useEffect(() => {
         const tileLayers: LayerTileMap = {};
@@ -106,6 +108,9 @@ const MapComponent: React.FC = () => {
             if (layer.id !== 'osm') {
                 const source = getSourceById(expandedLayerList, layer.id);
                 if (source) {
+                    if (source instanceof TileWMS) {
+                        configurePostWMS(source);
+                    }
                     const tileLayer = new TileLayer<TileWMS>({ source, opacity: layer.style?.opacity ?? 1 });
                     if (layer.zIndex) {
                         tileLayer.setZIndex(layer.zIndex);

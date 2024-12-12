@@ -165,7 +165,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
             if (filterOption == FilterOptionChronostratigraphy.Younger) {
                 const vocab = currentLayer.filterConfiguration?.filterChronostratigraphyAge;
                 const formattedTerm = selectedTermChronos.replace('#', '/').split('/').pop() || '';
-                const query = vocab?.queryYouger_strict.replace('${term}', formattedTerm);
+                const query = vocab?.queryYounger_strict.replace('${term}', formattedTerm);
                 console.log(query)
                 fetch(`/api/graphDb?vocabulary=Chronostratigraphy`,
                     {
@@ -196,7 +196,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                 const vocab = currentLayer.filterConfiguration?.filterChronostratigraphyAge;
                 const formattedTermOlder = selectedOlderTermChronos.replace('#', '/').split('/').pop() || '';
                 const formattedTermYounger = selectedYoungerTermChronos.split('/').pop() || '';
-                const query = vocab?.queryBetween_stricty
+                const query = vocab?.queryBetween_strict
                     .replace('${termOlder}', formattedTermOlder)
                     .replace('${termYounger}', formattedTermYounger);
                 console.log(query)
@@ -465,7 +465,8 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                     </div>
                     <p className='fontSize_0_7rem '>Selected layer: {currentLayer.label}</p>
                     <Box mt={10}>
-                        <Text fontWeight='$semibold' italic fontSize={11}>"The Search Box lets you filter map territories by specific attributes or terms for Chronostratigraphy and Tectonic Units.{'\n'}Features in whitch filters are met for all attributes and vocabulary terms simultaneously will be highlighted."</Text>
+                        <Text fontWeight='$semibold' italic fontSize={11}>The Search Box lets you filter features by specific attributes or terms of Chronostratigraphy and Tectonic Units vocabularies.
+Filtered features will be highlighted in yellow.</Text>
                     </Box>
                 </div>
                 {/* FILTER BY ATTRIBUTE */}
@@ -490,7 +491,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                                     </TooltipContent>
                                 </Tooltip>
                             </Box>
-                            <Text fontWeight='$semibold' italic fontSize={11}>"Filter by values ​​and by attributes of all features"</Text>
+                            <Text fontWeight='$semibold' italic fontSize={11}>&quot;Filter by values ​​and by attributes of all features&quot;</Text>
                         </Box>
                         <div className='mTop4'>
                             {currentLayer && renderFilterList(currentLayer, FiltersType.FilterByAttribute)}
@@ -577,7 +578,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                                             </TooltipContent>
                                         </Tooltip>
                                     </Box>
-                                    <Text fontWeight='$semibold' italic fontSize={11}>"Filter by a Chronostratigraphy term."</Text>
+                                    <Text fontWeight='$semibold' italic fontSize={11}>&quot;Filter by a Chronostratigraphy term.&quot;</Text>
                                 </Box>
                                 <Text italic fontSize={10}>(*) Broader terms are excluded from query results if they are not strictly included into interval</Text>
                                 <div className='mTop4'>
@@ -656,12 +657,12 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                                     {filterOption === 'bet' && (
                                         <div className='w65'>
                                             <div>
-                                                <Text fontWeight='$semibold' fontSize={13}>Older than (*):</Text>
+                                                <Text fontWeight='$semibold' fontSize={13}>From (younger than) (*):</Text>
                                                 <Select
                                                     value={chronostratigraphyOptions.find(option => option.value === selectedOlderTermChronos)}
                                                     onChange={(selectedOption) => setSelectedOlderTermChronos(selectedOption ? selectedOption.value : '')}
                                                     options={chronostratigraphyOptions}
-                                                    placeholder="Select start option"
+                                                    placeholder="Select end option"
                                                     isSearchable={true}
                                                     classNamePrefix="react-select"
                                                     menuPortalTarget={document.body}
@@ -689,12 +690,12 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                                                 />
                                             </div>
                                             <div>
-                                                <Text fontWeight='$semibold' fontSize={13}>Younger than (*):</Text>
+                                                <Text fontWeight='$semibold' fontSize={13}>To (older than) (*):</Text>
                                                 <Select
                                                     value={chronostratigraphyOptions.find(option => option.value === selectedYoungerTermChronos)}
                                                     onChange={(selectedOption) => setSelectedYoungerTermChronos(selectedOption ? selectedOption.value : '')}
                                                     options={chronostratigraphyOptions}
-                                                    placeholder="Select end option"
+                                                    placeholder="Select start option"
                                                     isSearchable={true}
                                                     classNamePrefix="react-select"
                                                     menuPortalTarget={document.body}
@@ -726,7 +727,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                                     {filterOption !== 'bet' && (
                                         <div className='w65'>
                                             <div>
-                                                <Text fontWeight='$semibold' fontSize={13}>{filterOption === 'old' ? 'Older than' : 'Younger than'} :</Text>
+                                                <Text fontWeight='$semibold' fontSize={13}>{filterOption === 'old' ? 'To (older than) (*)' : 'From (younger than) (*)'} :</Text>
                                                 <Select
                                                     value={chronostratigraphyOptions.find(option => option.value === selectedTermChronos)}
                                                     onChange={(selectedOption) => setSelectedTermChronos(selectedOption ? selectedOption.value : '')}
@@ -802,7 +803,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                                             </TooltipContent>
                                         </Tooltip>
                                     </Box>
-                                    <Text fontWeight='$semibold' italic fontSize={11}>"Filter for Tectonic Units term and their narrowers"</Text>
+                                    <Text fontWeight='$semibold' italic fontSize={11}>&quot;Filter for Tectonic Units term and their narrowers&quot;</Text>
                                 </Box>
                                 <div className='mTop4'>
                                     {currentLayer && renderFilterList(currentLayer, FiltersType.FilterByTectoUnitsTerm)}

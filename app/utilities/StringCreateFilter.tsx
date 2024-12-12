@@ -66,16 +66,30 @@ export const createQueryString = (layer: Layer): string => {
             chronostratigraphyTermsList.forEach(termItem => {
                 const { type, olderTerms, youngerTerms, betweenTerms } = termItem;
 
-                if (type === 'old' && olderTerms && olderTerms.length > 0) {
-                    const formattedOlderTerms = olderTerms.map(term => `\'${term}\'`).join(' , ');
-                    chronoConditions.push(`"${columnOld}" IN ( ${formattedOlderTerms} )`);
-                } else if (type === 'yon' && youngerTerms && youngerTerms.length > 0) {
-                    const formattedYoungerTerms = youngerTerms.map(term => `\'${term}\'`).join(' , ');
-                    chronoConditions.push(`"${columnYon}" IN ( ${formattedYoungerTerms} )`);
-                } else if (type === 'bet' && betweenTerms && betweenTerms.length > 0) {
-                    const formattedBetweenTerms = betweenTerms.map(term => `\'${term}\'`).join(' , ');
-                    chronoConditions.push(`"${columnOld}" IN ( ${formattedBetweenTerms} )`);
-                    chronoConditions.push(`"${columnYon}" IN ( ${formattedBetweenTerms} )`);
+                if (type === 'old' && olderTerms) {
+                    if(olderTerms.length > 0) {
+                        const formattedOlderTerms = olderTerms.map(term => `\'${term}\'`).join(' , ');
+                        chronoConditions.push(`"${columnOld}" IN ( ${formattedOlderTerms} )`);
+                    } else {
+                        chronoConditions.push(`"${columnOld}" IN ( 'empty' )`);
+                    }
+                } else if (type === 'yon' && youngerTerms) {
+                    if(youngerTerms.length > 0) {
+                        const formattedYoungerTerms = youngerTerms.map(term => `\'${term}\'`).join(' , ');
+                        chronoConditions.push(`"${columnYon}" IN ( ${formattedYoungerTerms} )`);
+                    } else {
+                        chronoConditions.push(`"${columnYon}" IN ( 'empty' )`);
+                    }
+                    
+                } else if (type === 'bet' && betweenTerms) {
+                    if(betweenTerms.length > 0) {
+                        const formattedBetweenTerms = betweenTerms.map(term => `\'${term}\'`).join(' , ');
+                        chronoConditions.push(`"${columnOld}" IN ( ${formattedBetweenTerms} )`);
+                        chronoConditions.push(`"${columnYon}" IN ( ${formattedBetweenTerms} )`);
+                    } else {
+                        chronoConditions.push(`"${columnOld}" IN ( 'empty' )`);
+                        chronoConditions.push(`"${columnYon}" IN ( 'empty' )`);
+                    }
                 }
             });
 

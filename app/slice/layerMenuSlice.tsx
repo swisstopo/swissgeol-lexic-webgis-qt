@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { findLayerById } from '../utilities/LayerMenuUtilities';
 import { FilterOptionChronostratigraphy, FiltersType } from '../enum/filterTypeEnum';
+import { chronoQueries } from '../../queriesConfig';
 
 /**
 * Represents an object that can be filtered based on specific criteria.
@@ -103,9 +104,9 @@ export interface FilterChronostratigraphyAgeItem {
 }
 
 export interface FilterChronostratigraphyAge {
-  queryYouger_strict: string,
+  queryYounger_strict: string,
   queryOlder_strict: string,
-  queryBetween_stricty: string,
+  queryBetween_strict: string,
   columnToFilterYon: string,
   columnToFilterOld: string,
 }
@@ -195,7 +196,7 @@ const initialState: LayerState = {
         canFilter: false,
         canGetFeatureInfo: false,
         source: {
-          url: 'https://qgis.swisstopo.demo.epsilon-italia.it/qgis-server/',
+          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
           params: { 'LAYERS': 'Tecto_Lines', 'TILED': true },
           serverType: 'qgis',
           crossOrigin: 'anonymous',
@@ -211,7 +212,7 @@ const initialState: LayerState = {
         canFilter: false,
         canGetFeatureInfo: false,
         source: {
-          url: 'https://qgis.swisstopo.demo.epsilon-italia.it/qgis-server/',
+          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
           params: { 'LAYERS': 'Quat_Surfaces', 'TILED': true },
           serverType: 'qgis',
           crossOrigin: 'anonymous',
@@ -231,13 +232,13 @@ const initialState: LayerState = {
           filterChronostratigraphyAge: {
             columnToFilterOld: 'Chrono_from_lexic',
             columnToFilterYon: 'Chrono_to_lexic',
-            queryYouger_strict: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  BIND(ex:${term} AS ?subject)\n  {\n   ?subject time:intervalMeets* ?concept .\n  } UNION {\n   ?subject time:intervalFinishedBy+ ?narrower .\n   ?subject time:intervalMeets* ?younger .\n   ?younger skos:narrower* ?concept .\n  } UNION {\n   ?subject time:intervalStarts* ?concept .\n   } UNION {\n   ?subject skos:broader+ ?broader .\n   ?broader time:intervalMeets+ ?concept .\n  }\n}",
-            queryOlder_strict: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  BIND(ex:${term} AS ?subject)\n  {\n   ?subject time:intervalMetBy* ?concept .\n  } UNION {\n   ?subject time:intervalMetBY* ?older .\n   ?older skos:narrower* ?concept .\n  } UNION {\n   ?subject time:intervalFinishes* ?concept .\n  } UNION {\n   ?subject skos:broader+ ?broader .\n ?broader time:intervalMetBy+ ?concept\n }\n}",
-            queryBetween_stricty: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  {\n   BIND(ex:${termOlder} AS ?olderConcept) {\n  ?olderConcept time:intervalMeets* ?concept .\n } UNION {\n   ?olderConcept time:intervalMeets* ?younger .\n   ?younger skos:narrower* ?concept .\n } UNION {\n   ?olderConcept time:intervalStarts* ?concept .\n  } UNION {\n   ?olderSub skos:broader+ ?broader .\n   ?broader time:intervalMeets+ ?object .\n  }\n }\n {\n  BIND(ex:${termYounger} AS ?youngerConcept) {\n   ?youngerConcept time:intervalMetBy* ?concept .\n  } UNION {\n   ?youngerConcept time:intervalMetBy* ?older .\n ?older skos:narrower* ?concept .\n  } UNION {\n   ?youngerConcept time:intervalFinishes* ?concept .\n   } UNION {\n   ?youngerConcept skos:broader+ ?broader .\n   ?broader time:intervalMetBy+ ?concept .\n  }\n }\n}",
+            queryYouger_strict: chronoQueries.queryYounger,
+            queryOlder_strict: chronoQueries.queryOlder,
+            queryBetween_stricty: chronoQueries.queryBetween,
           },
           filterConfigurationByTectoUnitsTerm: {
             idVocabulary: 'TectonicUnits',
-            queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/TectonicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
+            queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://dev-lexic.swissgeol.ch/TectonicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
             attributeToFilter: ['Tecto_lexic']
           },
           filterLayer: {
@@ -247,7 +248,7 @@ const initialState: LayerState = {
             canFilter: false,
             canGetFeatureInfo: false,
             source: {
-              url: 'https://qgis.swisstopo.demo.epsilon-italia.it/qgis-server/',
+              url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
               params: {
                 'LAYERS': 'Tecto_Units_augm_filtered', 'TILED': true,
                 'FILTER': 'Tecto_Units_augm_filtered:1=0'
@@ -263,7 +264,7 @@ const initialState: LayerState = {
         },
         canGetFeatureInfo: true,
         source: {
-          url: 'https://qgis.swisstopo.demo.epsilon-italia.it/qgis-server/',
+          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
           params: { 'LAYERS': 'Tecto_Units_augm', 'TILED': true },
           serverType: 'qgis',
           crossOrigin: 'anonymous',
@@ -311,13 +312,13 @@ const initialState: LayerState = {
           filterChronostratigraphyAge: {
             columnToFilterOld: 'chrono_from_lexic',
             columnToFilterYon: 'chrono_to_lexic',
-            queryYouger_strict: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  BIND(ex:${term} AS ?subject)\n  {\n   ?subject time:intervalMeets* ?concept .\n  } UNION {\n   ?subject time:intervalFinishedBy+ ?narrower .\n   ?subject time:intervalMeets* ?younger .\n   ?younger skos:narrower* ?concept .\n  } UNION {\n   ?subject time:intervalStarts* ?concept .\n   } UNION {\n   ?subject skos:broader+ ?broader .\n   ?broader time:intervalMeets+ ?concept .\n  }\n}",
-            queryOlder_strict: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  BIND(ex:${term} AS ?subject)\n  {\n   ?subject time:intervalMetBy* ?concept .\n  } UNION {\n   ?subject time:intervalMetBY* ?older .\n   ?older skos:narrower* ?concept .\n  } UNION {\n   ?subject time:intervalFinishes* ?concept .\n  } UNION {\n   ?subject skos:broader+ ?broader .\n ?broader time:intervalMetBy+ ?concept\n }\n}",
-            queryBetween_stricty: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  {\n   BIND(ex:${termOlder} AS ?olderConcept) {\n  ?olderConcept time:intervalMeets* ?concept .\n } UNION {\n   ?olderConcept time:intervalMeets* ?younger .\n   ?younger skos:narrower* ?concept .\n } UNION {\n   ?olderConcept time:intervalStarts* ?concept .\n  } UNION {\n   ?olderSub skos:broader+ ?broader .\n   ?broader time:intervalMeets+ ?object .\n  }\n }\n {\n  BIND(ex:${termYounger} AS ?youngerConcept) {\n   ?youngerConcept time:intervalMetBy* ?concept .\n  } UNION {\n   ?youngerConcept time:intervalMetBy* ?older .\n ?older skos:narrower* ?concept .\n  } UNION {\n   ?youngerConcept time:intervalFinishes* ?concept .\n   } UNION {\n   ?youngerConcept skos:broader+ ?broader .\n   ?broader time:intervalMetBy+ ?concept .\n  }\n }\n}",
+            queryYouger_strict: chronoQueries.queryYounger,
+            queryOlder_strict: chronoQueries.queryOlder,
+            queryBetween_stricty: chronoQueries.queryBetween,
           },
           filterConfigurationByTectoUnitsTerm: {
             idVocabulary: 'TectonicUnits',
-            queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/TectonicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
+            queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://dev-lexic.swissgeol.ch/TectonicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
             attributeToFilter: ['tecto_lexic']
           },
           filterLayer: {
@@ -327,7 +328,7 @@ const initialState: LayerState = {
             canFilter: false,
             canGetFeatureInfo: false,
             source: {
-              url: 'https://qgis.swisstopo.demo.epsilon-italia.it/qgis-server/',
+              url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
               params: {
                 'LAYERS': 'GC_BEDROCK_filtered', 'TILED': true,
                 'FILTER': 'GC_BEDROCK_filtered:1=0'
@@ -343,7 +344,7 @@ const initialState: LayerState = {
         },
         canGetFeatureInfo: true,
         source: {
-          url: 'https://qgis.swisstopo.demo.epsilon-italia.it/qgis-server/',
+          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
           params: {
             'LAYERS': 'GC_BEDROCK',
           },
@@ -384,9 +385,9 @@ const initialState: LayerState = {
           filterChronostratigraphyAge: {
             columnToFilterOld: 'chrono_from_lexic',
             columnToFilterYon: 'chrono_to_lexic',
-            queryYouger_strict: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  BIND(ex:${term} AS ?subject)\n  {\n   ?subject time:intervalMeets* ?concept .\n  } UNION {\n   ?subject time:intervalFinishedBy+ ?narrower .\n   ?subject time:intervalMeets* ?younger .\n   ?younger skos:narrower* ?concept .\n  } UNION {\n   ?subject time:intervalStarts* ?concept .\n   } UNION {\n   ?subject skos:broader+ ?broader .\n   ?broader time:intervalMeets+ ?concept .\n  }\n}",
-            queryOlder_strict: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  BIND(ex:${term} AS ?subject)\n  {\n   ?subject time:intervalMetBy* ?concept .\n  } UNION {\n   ?subject time:intervalMetBY* ?older .\n   ?older skos:narrower* ?concept .\n  } UNION {\n   ?subject time:intervalFinishes* ?concept .\n  } UNION {\n   ?subject skos:broader+ ?broader .\n ?broader time:intervalMetBy+ ?concept\n }\n}",
-            queryBetween_stricty: "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX time: <http://www.w3.org/2006/time#>\nPREFIX ex: <https://lexic.swisstopo.demo.epsilon-italia.it/Chronostratigraphy/>\n\nSELECT DISTINCT ?concept\nWHERE {\n  {\n   BIND(ex:${termOlder} AS ?olderConcept) {\n  ?olderConcept time:intervalMeets* ?concept .\n } UNION {\n   ?olderConcept time:intervalMeets* ?younger .\n   ?younger skos:narrower* ?concept .\n } UNION {\n   ?olderConcept time:intervalStarts* ?concept .\n  } UNION {\n   ?olderSub skos:broader+ ?broader .\n   ?broader time:intervalMeets+ ?object .\n  }\n }\n {\n  BIND(ex:${termYounger} AS ?youngerConcept) {\n   ?youngerConcept time:intervalMetBy* ?concept .\n  } UNION {\n   ?youngerConcept time:intervalMetBy* ?older .\n ?older skos:narrower* ?concept .\n  } UNION {\n   ?youngerConcept time:intervalFinishes* ?concept .\n   } UNION {\n   ?youngerConcept skos:broader+ ?broader .\n   ?broader time:intervalMetBy+ ?concept .\n  }\n }\n}",
+            queryYouger_strict: chronoQueries.queryYounger,
+            queryOlder_strict: chronoQueries.queryOlder,
+            queryBetween_stricty: chronoQueries.queryBetween,
           },
           filterLayer: {
             id: 'GC_UNCO_DEPOSITS_filtered',
@@ -395,7 +396,7 @@ const initialState: LayerState = {
             canFilter: false,
             canGetFeatureInfo: false,
             source: {
-              url: 'https://qgis.swisstopo.demo.epsilon-italia.it/qgis-server/',
+              url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
               params: {
                 'LAYERS': 'GC_UNCO_DEPOSITS_filtered', 'TILED': true,
                 'FILTER': 'GC_UNCO_DEPOSITS_filtered:1=0'
@@ -411,7 +412,7 @@ const initialState: LayerState = {
         },
         canGetFeatureInfo: true,
         source: {
-          url: 'https://qgis.swisstopo.demo.epsilon-italia.it/qgis-server/',
+          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
           params: {
             'LAYERS': 'GC_UNCO_DEPOSITS',
           },
@@ -456,7 +457,7 @@ const initialState: LayerState = {
         canFilter: false,
         canGetFeatureInfo: false,
         source: {
-          url: 'https://qgis.swisstopo.demo.epsilon-italia.it/qgis-server/',
+          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
           params: { 'LAYERS': 'GeoCover-Vektordaten', 'TILED': true },
           serverType: 'qgis',
           crossOrigin: 'anonymous',

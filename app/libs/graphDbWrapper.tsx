@@ -8,11 +8,11 @@ interface Literal {
     value: string;
     language?: string;
 }
-interface VocabularyQueryResult  {
+interface VocabularyQueryResult {
     term: NamedNode;
     prefLabel: Literal;
 }
-interface ConceptQueryResult   {
+interface ConceptQueryResult {
     concept: NamedNode;
 }
 /**
@@ -37,7 +37,7 @@ export async function fetchVocabulariesData() {
 
         try {
             console.log(`5 Executing SPARQL query for vocabulary ${vocab.id}`);
-            const queryResults: VocabularyQueryResult [] = await queryExecutor.executeSparqlQuery(sparqlQuery);
+            const queryResults: VocabularyQueryResult[] = await queryExecutor.executeSparqlQuery(sparqlQuery);
             /* console.log('Query results:', queryResults); */
             results[vocab.id] = queryResults.map(result => ({
                 label: result.prefLabel.value,
@@ -46,7 +46,17 @@ export async function fetchVocabulariesData() {
             /* console.log(`Successfully fetched data for vocabulary ${vocab.id}:`, results[vocab.id]); */
         } catch (error) {
             console.log(`Error fetching data for vocabulary ${vocab.id}:`, error);
-            throw new Error(`Error fetching data for vocabulary ${vocab.id}: ${error.message}`);
+
+            let errorMessage = 'Unknown error';
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            } else if (typeof error === 'string') {
+                errorMessage = error;
+            } else if (error && typeof error === 'object' && 'message' in error) {
+                errorMessage = (error as { message: string }).message;
+            }
+
+            throw new Error(`Error fetching data for vocabulary ${vocab.id}: ${errorMessage}`);
         }
     }
 
@@ -72,7 +82,7 @@ export async function fetchVocabolaryTermByQuery(query: string, vocabId: string)
     for (const vocab of vocabulariesArray) {
         if (vocabId === vocab.id) {
             const { url, username, password } = getConfigDB(vocab.id);
-            const repositoryUrl = `${url}/repositories/${vocab.repositoryId}`;
+            const repositoryUrl = `${url}/repositories/${vocab.repositoryId} `;
             const client = new GraphDBClient(url, username, password);
 
             const queryExecutor = new QueryExecutor(client, vocab.repositoryId, url, username, password, repositoryUrl);
@@ -81,15 +91,23 @@ export async function fetchVocabolaryTermByQuery(query: string, vocabId: string)
 
             try {
                 console.log(`7 Executing SPARQL query for vocabulary ${vocab.id}`);
-                const queryResults: ConceptQueryResult [] = await queryExecutor.executeSparqlQuery(sparqlQuery);
-                console.log(`Query results ${vocab.id}:`, queryResults);
+                const queryResults: ConceptQueryResult[] = await queryExecutor.executeSparqlQuery(sparqlQuery);
+                console.log(`Query results ${vocab.id}: `, queryResults);
                 for (const result of queryResults) {
                     results.push(result.concept.id);
                 }
-                console.log(`Successfully fetched data for ${vocab.id}:`, results);
+                console.log(`Successfully fetched data for ${vocab.id}: `, results);
             } catch (error) {
-                console.log(`Error fetching data for vocabulary ${vocab.id}:`, error);
-                throw new Error(`Error fetching data for vocabulary ${vocab.id}: ${error.message}`);
+                console.log(`Error fetching data for vocabulary ${vocab.id}: `, error);
+                let errorMessage = 'Unknown error';
+                if (error instanceof Error) {
+                    errorMessage = error.message;
+                } else if (typeof error === 'string') {
+                    errorMessage = error;
+                } else if (error && typeof error === 'object' && 'message' in error) {
+                    errorMessage = (error as { message: string }).message;
+                }
+                throw new Error(`Error fetching data for vocabulary ${vocab.id}: ${errorMessage} `);
             }
         }
     }

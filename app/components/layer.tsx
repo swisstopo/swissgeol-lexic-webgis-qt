@@ -4,6 +4,7 @@ import TreeView from './treeView';
 import { ChevronsLeftIcon, Icon } from '@gluestack-ui/themed';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
+import VersionBox from './Version';
 
 /**
  * Creates and manages the menu regarding the display of layers on the map.
@@ -37,6 +38,7 @@ const Layer: React.FC = () => {
                     <TreeView layers={layerData} />
                 </div>
             </div>
+            <VersionBox />
         </div>
     );
 }

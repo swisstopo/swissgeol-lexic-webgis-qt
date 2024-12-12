@@ -79,7 +79,7 @@ describe('String Create Query ', () => {
             id: 'Tecto_Units_augm_filtered',
             filters: {
                 filterByTectoUnitsTerm: [
-                    { term: 'https://lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau', includeNarrowers: false }
+                    { term: 'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau', includeNarrowers: false }
                 ]
             },
             label: 'layer',
@@ -99,7 +99,7 @@ describe('String Create Query ', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Tecto_lexic" IN ( \'https://lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' )');
+        expect(queryString).toBe('Tecto_Units_augm_filtered:"Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' )');
     });
 
     it('FilterByTecnoTerms con 1 Valore con narrower', () => {
@@ -108,10 +108,10 @@ describe('String Create Query ', () => {
             filters: {
                 filterByTectoUnitsTerm: [
                     {
-                        term: 'https://lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau',
+                        term: 'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau',
                         narrowers: [
-                            'https://lexic.swissgeol.ch/TectonicUnits/SilberenSlices',
-                            'https://lexic.swissgeol.ch/TectonicUnits/MonteRosaNappe'
+                            'https://dev-lexic.swissgeol.ch/TectonicUnits/SilberenSlices',
+                            'https://dev-lexic.swissgeol.ch/TectonicUnits/MonteRosaNappe'
                         ],
                         includeNarrowers: true
                     }
@@ -134,7 +134,7 @@ describe('String Create Query ', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Tecto_lexic" IN ( \'https://lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' , \'https://lexic.swissgeol.ch/TectonicUnits/SilberenSlices\' , \'https://lexic.swissgeol.ch/TectonicUnits/MonteRosaNappe\' )');
+        expect(queryString).toBe('Tecto_Units_augm_filtered:"Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/SilberenSlices\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/MonteRosaNappe\' )');
     });
 
     it('FilterByAttribute con 1 Attributo e FilterByTecnoTerms con 1 Valore senza narrower', () => {
@@ -145,7 +145,7 @@ describe('String Create Query ', () => {
                     { key: 'Origin_EN', value: 'European continental platform' }
                 ],
                 filterByTectoUnitsTerm: [
-                    { term: 'https://lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau', includeNarrowers: false }
+                    { term: 'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau', includeNarrowers: false }
                 ]
             },
             label: 'layer',
@@ -165,7 +165,7 @@ describe('String Create Query ', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Tecto_lexic" IN ( \'https://lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' )');
+        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' )');
     });
 
     it('FilterByAttribute con 1 Attributo e FilterByTecnoTerms con 1 Valore con narrower', () => {
@@ -177,9 +177,9 @@ describe('String Create Query ', () => {
                 ],
                 filterByTectoUnitsTerm: [
                     {
-                        term: 'https://lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau',
+                        term: 'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau',
                         narrowers: [
-                            'https://lexic.swissgeol.ch/TectonicUnits/HauteSaonePlatform'
+                            'https://dev-lexic.swissgeol.ch/TectonicUnits/HauteSaonePlatform'
                         ],
                         includeNarrowers: true
                     }
@@ -202,7 +202,7 @@ describe('String Create Query ', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Tecto_lexic" IN ( \'https://lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' , \'https://lexic.swissgeol.ch/TectonicUnits/HauteSaonePlatform\' )');
+        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/HauteSaonePlatform\' )');
     });
 
     it('FilterByAttribute con + Attributi e FilterByTecnoTerms con 1 Valore senza narrower', () => {
@@ -215,7 +215,7 @@ describe('String Create Query ', () => {
                     { key: 'Shape_Area', value: '159457153.91848147' }
                 ],
                 filterByTectoUnitsTerm: [
-                    { term: 'https://lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau', includeNarrowers: false }
+                    { term: 'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau', includeNarrowers: false }
                 ]
             },
             label: 'layer',
@@ -235,7 +235,7 @@ describe('String Create Query ', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Litho_EN" = \'Molasse (Cenozoic)\' AND "Shape_Area" = \'159457153.91848147\' AND "Tecto_lexic" IN ( \'https://lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' )');
+        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Litho_EN" = \'Molasse (Cenozoic)\' AND "Shape_Area" = \'159457153.91848147\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' )');
     });
 
     it('FilterByAttribute con + Attributi e FilterByTecnoTerms con 1 Valore con narrower', () => {
@@ -248,9 +248,9 @@ describe('String Create Query ', () => {
                 ],
                 filterByTectoUnitsTerm: [
                     {
-                        term: 'https://lexic.swissgeol.ch/TectonicUnits/SouthGermanPlatform',
+                        term: 'https://dev-lexic.swissgeol.ch/TectonicUnits/SouthGermanPlatform',
                         narrowers: [
-                            'https://lexic.swissgeol.ch/TectonicUnits/SouthGermanPlatform'
+                            'https://dev-lexic.swissgeol.ch/TectonicUnits/SouthGermanPlatform'
                         ],
                         includeNarrowers: true
                     }
@@ -273,6 +273,6 @@ describe('String Create Query ', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Shape_Area" = \'3222452787.5111227\' AND "Tecto_lexic" IN ( \'https://lexic.swissgeol.ch/TectonicUnits/SouthGermanPlatform\' , \'https://lexic.swissgeol.ch/TectonicUnits/SouthGermanPlatform\' )');
+        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Shape_Area" = \'3222452787.5111227\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/SouthGermanPlatform\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/SouthGermanPlatform\' )');
     });
 });
