@@ -232,9 +232,9 @@ const initialState: LayerState = {
           filterChronostratigraphyAge: {
             columnToFilterOld: 'Chrono_from_lexic',
             columnToFilterYon: 'Chrono_to_lexic',
-            queryYouger_strict: chronoQueries.queryYounger,
+            queryYounger_strict: chronoQueries.queryYounger,
             queryOlder_strict: chronoQueries.queryOlder,
-            queryBetween_stricty: chronoQueries.queryBetween,
+            queryBetween_strict: chronoQueries.queryBetween,
           },
           filterConfigurationByTectoUnitsTerm: {
             idVocabulary: 'TectonicUnits',
@@ -312,9 +312,9 @@ const initialState: LayerState = {
           filterChronostratigraphyAge: {
             columnToFilterOld: 'chrono_from_lexic',
             columnToFilterYon: 'chrono_to_lexic',
-            queryYouger_strict: chronoQueries.queryYounger,
+            queryYounger_strict: chronoQueries.queryYounger,
             queryOlder_strict: chronoQueries.queryOlder,
-            queryBetween_stricty: chronoQueries.queryBetween,
+            queryBetween_strict: chronoQueries.queryBetween,
           },
           filterConfigurationByTectoUnitsTerm: {
             idVocabulary: 'TectonicUnits',
@@ -385,9 +385,9 @@ const initialState: LayerState = {
           filterChronostratigraphyAge: {
             columnToFilterOld: 'chrono_from_lexic',
             columnToFilterYon: 'chrono_to_lexic',
-            queryYouger_strict: chronoQueries.queryYounger,
+            queryYounger_strict: chronoQueries.queryYounger,
             queryOlder_strict: chronoQueries.queryOlder,
-            queryBetween_stricty: chronoQueries.queryBetween,
+            queryBetween_strict: chronoQueries.queryBetween,
           },
           filterLayer: {
             id: 'GC_UNCO_DEPOSITS_filtered',
