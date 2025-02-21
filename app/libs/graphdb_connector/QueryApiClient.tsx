@@ -31,6 +31,7 @@ class QueryExecutor {
         this.repositoryConfig = new RepositoryClientConfig(Url)
             .setEndpoints([RepositoryUrl])
             .setReadTimeout(50000)
+            .setWriteTimeout(50000)
             .setHeaders({
                 'Accept': RDFMimeType.SPARQL_RESULTS_XML,
             })

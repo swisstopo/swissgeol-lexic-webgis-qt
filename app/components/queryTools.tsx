@@ -150,6 +150,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                         })
                         .catch(error => {
                             console.error('Failed to fetch data from GraphDB:', error);
+                            alert("Timeout on semantic query, please try again! Press ADD button once more");
                         });
                 } else {
                     const filter = {
@@ -190,6 +191,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                     })
                     .catch(error => {
                         console.error('Failed to fetch data from GraphDB:', error);
+                        alert("Timeout on semantic query, please try again! Press ADD button once more");
                     });
             }
             if (filterOption == FilterOptionChronostratigraphy.Between) {
@@ -223,6 +225,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                     })
                     .catch(error => {
                         console.error('Failed to fetch data from GraphDB:', error);
+                        alert("Timeout on semantic query, please try again! Press ADD button once more");
                     });
 
             }
@@ -254,6 +257,9 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                     })
                     .catch(error => {
                         console.error('Failed to fetch data from GraphDB:', error);
+
+                        alert("Timeout on semantic query, please try again! Press ADD button once more");
+
                     });
             }
         }
@@ -466,7 +472,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                     <p className='fontSize_0_7rem '>Selected layer: {currentLayer.label}</p>
                     <Box mt={10}>
                         <Text fontWeight='$semibold' italic fontSize={11}>The Search Box lets you filter features by specific attributes or terms of Chronostratigraphy and Tectonic Units vocabularies.
-Filtered features will be highlighted in yellow.</Text>
+                            Filtered features will be highlighted in yellow.</Text>
                     </Box>
                 </div>
                 {/* FILTER BY ATTRIBUTE */}
