@@ -46,15 +46,23 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
     const currentLayer = findLayerById(layers, selectedLayerId || '');
     const tecto = cache['TectonicUnits'] || [];
     const chronostratigraphy = cache['Chronostratigraphy'] || [];
+    const lithostratigraphy = cache['Lithostratigraphy'] || [];
     const [filterOption, setFilterOption] = useState("bet");
     const [selectedTectonicUnitTerm, setSelectedTectonicUnitTerm] = useState<string>('');
+    const [selectedLithostratigraphyTerm, setSelectedLithostratigraphyTerm] = useState('');
+
     const [includeNarrowers, setIncludeNarrowers] = useState<boolean>(true);
+    const [includeLithoNarrowers, setIncludeLithoNarrowers] = useState(true);
+
     const [selectedOlderTermChronos, setSelectedOlderTermChronos] = useState('');
     const [selectedYoungerTermChronos, setSelectedYoungerTermChronos] = useState('');
     const [selectedTermChronos, setSelectedTermChronos] = useState('');
 
     const handleChange = (isChecked: boolean) => {
         setIncludeNarrowers(isChecked);
+    };
+    const handleChangeLithoNarrowers = (isChecked: boolean) => {
+        setIncludeLithoNarrowers(isChecked);
     };
     // Function to extract label from a term
     const extractLabel = (term: string) => {
@@ -263,6 +271,49 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                     });
             }
         }
+
+        if (filterType === FiltersType.FilterByLithostratigraphyTerm && selectedLithostratigraphyTerm && selectedLayerId) {
+            const vocab = currentLayer.filterConfiguration?.filterConfigurationByLithostratigraphyTerm;
+            const formattedTerm = selectedLithostratigraphyTerm.replace('#', '/').split('/').pop() || '';
+            const query = vocab?.queryNarrower.replace('${term}', formattedTerm);
+            console.log(query)
+            if (vocab) {
+                if (includeLithoNarrowers) {
+                    fetch(`/api/graphDb?vocabulary=${vocab.idVocabulary}`,
+                        {
+                            method: "POST",
+                            body: query
+                        }
+                    )
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Fetched data:', data);
+                            let narrowers: string[] = data;
+                            const filter = {
+                                filterByLithostratigraphyTerm: [{ term: selectedLithostratigraphyTerm, includeNarrowers: includeLithoNarrowers, narrowers: narrowers }]
+                            };
+
+                            console.log('Payload passed to addFilter:', { layerId: selectedLayerId, filter, filterType: 'filterByLithostratigraphyTerm' });
+                            dispatch(addFilter({ layerId: selectedLayerId, filter, filterType: FiltersType.FilterByLithostratigraphyTerm }));
+                        })
+                        .catch(error => {
+                            console.error('Failed to fetch data from GraphDB:', error);
+                            alert("Timeout on semantic query, please try again! Press ADD button once more");
+                        });
+                } else {
+                    const filter = {
+                        filterByLithostratigraphyTerm: [{ term: selectedLithostratigraphyTerm, includeNarrowers: includeLithoNarrowers }]
+                    };
+                    console.log('Payload passed to addFilter:', { layerId: selectedLayerId, filter, filterType: 'filterByLithostratigraphyTerm' });
+                    dispatch(addFilter({ layerId: selectedLayerId, filter, filterType: FiltersType.FilterByLithostratigraphyTerm }));
+                }
+            }
+        }
     };
     /**
     * Removes a filter to the layer by updating the state in redux.
@@ -415,6 +466,43 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                         });
                     }
                     break;
+                case FiltersType.FilterByLithostratigraphyTerm:
+                    console.log(filters.filterByLithostratigraphyTerm);
+                    if (filters.filterByLithostratigraphyTerm && filters.filterByLithostratigraphyTerm.length > 0) {
+                        filters.filterByLithostratigraphyTerm.forEach((filter, index) => {
+                            const { term, includeNarrowers, narrowers } = filter;
+                            const label = getVocabularyLabel(term);
+
+                            if (label) {
+                                filterList.push(
+                                    <div className='flex containerFilter' key={index}>
+                                        <div className='flex justify_between divFilter'>
+                                            <div>
+                                                <p className='fontSize_0_8rem text_center'>{label}</p>
+                                            </div>
+                                            <div>
+                                                <p className='fontSize_0_8rem text_center'>{includeNarrowers}</p>
+                                            </div>
+                                            {includeNarrowers && (
+                                                <div>
+                                                    <Badge size="md" variant="solid" action="success" rounded={'$full'}>
+                                                        <BadgeText>N</BadgeText>
+                                                        {/* <BadgeIcon as={CheckIcon} ml={2} /> */}
+                                                    </Badge>
+                                                </div>
+                                            )}
+                                            <div className='' onClick={() => handleRemoveFilter(layer.id, term, FiltersType.FilterByLithostratigraphyTerm)}>
+                                                <Icon as={TrashIcon} m="$2" w="$4" h="$4" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            } else {
+                                console.error('Etichetta non trovata per la chiave:', term);
+                            }
+                        });
+                    }
+                    break;
                 default:
                     break;
             }
@@ -438,7 +526,8 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
     const excludeColumns = [
         ...(currentLayer?.filterConfiguration?.filterConfigurationByTectoUnitsTerm?.attributeToFilter || []),
         currentLayer?.filterConfiguration?.filterChronostratigraphyAge?.columnToFilterOld,
-        currentLayer?.filterConfiguration?.filterChronostratigraphyAge?.columnToFilterYon
+        currentLayer?.filterConfiguration?.filterChronostratigraphyAge?.columnToFilterYon,
+        ...(currentLayer?.filterConfiguration?.filterConfigurationByLithostratigraphyTerm?.attributeToFilter || [])
     ]
     const attributeOptions = currentLayer.attributesConfiguration?.attributes?.map(attr => ({
         value: attr,
@@ -446,6 +535,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
     })) || [];
     const filteredAttributeOptions = attributeOptions.filter(option => !excludeColumns.includes(option.value));
     const optionsTectounits = [...tecto].sort((a, b) => a.label.localeCompare(b.label));
+    const optionsLithostratigraphy = [...lithostratigraphy].sort((a, b) => a.label.localeCompare(b.label));
     const chronostratigraphyOptions = [...chronostratigraphy]
         .sort((a, b) => a.label.localeCompare(b.label))
         .map(term => ({
@@ -865,6 +955,101 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                                     </div>
                                     <div className='p8'>
                                         <Button ml={20} size="xs" variant="solid" bg="$backgroundLight400" action="primary" isDisabled={false} isFocusVisible={false} onPress={() => handleAddFilter(FiltersType.FilterByTectoUnitsTerm)} style={{ width: 70, height: 50, borderRadius: 15, }}>
+                                            <ButtonText>Add </ButtonText>
+                                            <ButtonIcon as={AddIcon} />
+                                        </Button>
+                                    </div>
+                                </div>
+                            </Card>
+                        </div>
+                    </>
+
+                }
+
+                {/* FILTER BY LITHOSTRATIGRAPHY TERM */}
+                {
+                    currentLayer.filterConfiguration?.filterConfigurationByLithostratigraphyTerm &&
+                    <>
+                        <Box w={'100%'} mt={'2%'}>
+                            <Text mb={0} fontSize={12} textAlign='center'>AND</Text>
+                        </Box>
+                        <div className='mTop2'>
+                            <Card>
+                                <Box flex={1}>
+                                    <Box flexDirection='row'>
+                                        <p className='fontSize_1rem font_bold mButtom2'>Filter by Lithostratigraphy term</p>
+                                        <Tooltip
+                                            placement="top left"
+                                            trigger={(triggerProps) => {
+                                                return (
+                                                    <Box {...triggerProps}>
+                                                        <Icon as={InfoIcon} ml={2} w="$3" h="$3" />
+                                                    </Box>
+
+                                                )
+                                            }}
+                                        >
+                                            <TooltipContent>
+                                                <TooltipText fontSize={12}>Filter by Lithostratigraphy term</TooltipText>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </Box>
+                                    <Text fontWeight='$semibold' italic fontSize={11}>&quot;Filter for Lithostratigraphy term and their narrowers&quot;</Text>
+                                </Box>
+                                <div className='mTop4'>
+                                    {currentLayer && renderFilterList(currentLayer, FiltersType.FilterByLithostratigraphyTerm)}
+                                </div>
+                                <div className='flex mTop4 w100 justify_between'>
+                                    <div className='w65'>
+                                        <div>
+                                            <Text fontWeight='$semibold' fontSize={13}>Term:</Text>
+                                            <Select
+                                                value={optionsLithostratigraphy.find(option => option.value === selectedLithostratigraphyTerm)}
+                                                onChange={(selectedOption) => setSelectedLithostratigraphyTerm(selectedOption ? selectedOption.value : '')}
+                                                options={optionsLithostratigraphy}
+                                                placeholder="Select Lithostratigraphy Term"
+                                                isSearchable={true}
+                                                classNamePrefix="react-select"
+                                                menuPortalTarget={document.body}
+                                                maxMenuHeight={240}
+                                                menuPlacement='top'
+                                                styles={{
+                                                    control: (provided) => ({
+                                                        ...provided,
+                                                        borderRadius: '20px',
+                                                        fontSize: '12px',
+                                                        color: 'black',
+                                                    }),
+                                                    singleValue: (provided) => ({
+                                                        ...provided,
+                                                        fontSize: '12px',
+                                                        color: 'black',
+                                                    }),
+                                                    option: (provided) => ({
+                                                        ...provided,
+                                                        fontSize: '12px',
+                                                        color: 'black',
+                                                    }),
+                                                    menu: (provided) => ({
+                                                        ...provided,
+                                                    }),
+                                                }}
+                                            />
+                                        </div>
+                                        <div className='mTop4 mLeft5'>
+                                            <Checkbox size="sm" isInvalid={false} isDisabled={false}
+                                                value={includeLithoNarrowers.toString()}
+                                                isChecked={includeLithoNarrowers}
+                                                onChange={handleChangeLithoNarrowers}>
+                                                <CheckboxIndicator mr="$2">
+                                                    <CheckboxIcon as={CheckIcon} />
+                                                </CheckboxIndicator>
+                                                <CheckboxLabel>Include Narrowers</CheckboxLabel>
+                                            </Checkbox>
+                                        </div>
+                                    </div>
+                                    <div className='p8'>
+                                        <Button ml={20} size="xs" variant="solid" bg="$backgroundLight400" action="primary" isDisabled={false} isFocusVisible={false} onPress={() => handleAddFilter(FiltersType.FilterByLithostratigraphyTerm)} style={{ width: 70, height: 50, borderRadius: 15, }}>
                                             <ButtonText>Add </ButtonText>
                                             <ButtonIcon as={AddIcon} />
                                         </Button>

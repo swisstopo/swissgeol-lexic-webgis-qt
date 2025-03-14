@@ -99,77 +99,47 @@ export const chronoQueries = {
   PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
   PREFIX time: <http://www.w3.org/2006/time#>
   PREFIX ex: <https://dev-lexic.swissgeol.ch/Chronostratigraphy/>
-  
+
   SELECT DISTINCT ?concept
   WHERE {
     # Define older and younger subjects
     BIND(ex:\${termOlder} AS ?olderSub)
     BIND(ex:\${termYounger} AS ?youngerSub)
-  
+
     {
       # Step 1: Find intersection of younger-than-olderSub and older-than-youngerSub
       {
         # Concepts younger than olderSub
         {
-          ?olderSub time:intervalMeets* ?concept .
+          ?olderSub time:intervalMeets* ?concept2 .
         } UNION {
           ?olderSub time:intervalMeets* ?younger .
-          ?younger skos:narrower* ?concept .
+          ?younger skos:narrower* ?concept2 .
         } UNION {
-          ?olderSub time:intervalStarts* ?concept .
+          ?olderSub time:intervalStarts* ?concept2 .
         } UNION {
           ?olderSub skos:broader+ ?broaderOld .
-          ?broaderOld time:intervalMeets+ ?concept .
+          ?broaderOld time:intervalMeets+ ?concept2 .
         }
+        # Traverse skos:narrower from intermediate objects
+        ?concept2 skos:narrower* ?concept .
       }
-      {
+      FILTER EXISTS {
         # Concepts older than youngerSub
         {
-          ?youngerSub time:intervalMetBy* ?concept .
+          ?youngerSub time:intervalMetBy* ?concept2 .
         } UNION {
           ?youngerSub time:intervalMetBy* ?older .
-          ?older skos:narrower* ?concept .
+          ?older skos:narrower* ?concept2 .
         } UNION {
-          ?youngerSub time:intervalFinishes* ?concept .
+          ?youngerSub time:intervalFinishes* ?concept2 .
         } UNION {
           ?youngerSub skos:broader+ ?broaderYoung .
-          ?broaderYoung time:intervalMetBy+ ?concept .
+          ?broaderYoung time:intervalMetBy+ ?concept2 .
         }
+        # Traverse skos:narrower from intermediate objects
+        ?concept2 skos:narrower* ?concept .
       }
-    }
-    UNION {
-      # Step 2: Add skos:narrower concepts derived from the intersection
-      {
-        # Repeat intersection logic for intermediate objects
-        {
-          {
-            ?olderSub time:intervalMeets* ?intermediateObject .
-          } UNION {
-            ?olderSub time:intervalMeets* ?younger .
-            ?younger skos:narrower* ?intermediateObject .
-          } UNION {
-            ?olderSub time:intervalStarts* ?intermediateObject .
-          } UNION {
-            ?olderSub skos:broader+ ?broaderOld .
-            ?broaderOld time:intervalMeets+ ?intermediateObject .
-          }
-        }
-        {
-          {
-            ?youngerSub time:intervalMetBy* ?intermediateObject .
-          } UNION {
-            ?youngerSub time:intervalMetBy* ?older .
-            ?older skos:narrower* ?intermediateObject .
-          } UNION {
-            ?youngerSub time:intervalFinishes* ?intermediateObject .
-          } UNION {
-            ?youngerSub skos:broader+ ?broaderYoung .
-            ?broaderYoung time:intervalMetBy+ ?intermediateObject .
-          }
-        }
-      }
-      # Traverse skos:narrower from intermediate objects
-      ?intermediateObject skos:narrower+ ?concept .
     }
   }`
 };

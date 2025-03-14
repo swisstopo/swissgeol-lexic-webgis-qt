@@ -42,6 +42,7 @@ export interface Filter {
   filterByAttribute?: FilterByAttribute[];
   filterByTectoUnitsTerm?: FilterByTectoUnitsTermItem[];
   filterChronostratigraphyAge?: FilterChronostratigraphyAgeItem[]
+  filterByLithostratigraphyTerm?: FilterByLithostratigraphyTermItem[];
 }
 
 /* export interface LinkLabelItem {
@@ -66,6 +67,12 @@ export interface FilterByTectoUnitsTermItem {
   narrowers?: string[];
 }
 
+export interface FilterByLithostratigraphyTermItem {
+  term: string;
+  includeNarrowers: boolean;
+  narrowers?: string[];
+}
+
 /**
  * Interface representing a filter configuration for tectonic units
  * 
@@ -77,6 +84,21 @@ export interface FilterByTectoUnitsTermItem {
  * @property attributeToFilter
  */
 export interface FilterTectoUnitsTerm {
+  idVocabulary: string;
+  queryNarrower: string;
+  attributeToFilter: string[];
+}
+/**
+ * Interface representing a filter configuration for lithostratigraphy term
+ * 
+ * This interface defines the configuration for filtering based on lithostratigraphy. 
+ * It includes the vocabulary ID, a query for narrower terms, and a list of attributes to be filtered.
+ * 
+ * @property idVocabulary 
+ * @property queryNarrower - The SPARQL query to find narrower terms
+ * @property attributeToFilter
+ */
+export interface FilterLithostratigraphyTerm {
   idVocabulary: string;
   queryNarrower: string;
   attributeToFilter: string[];
@@ -146,6 +168,7 @@ export interface FilterConfiguration {
   filterConfigurationByAttribute?: { key: string; label: string }[];
   filterConfigurationByTectoUnitsTerm?: FilterTectoUnitsTerm;
   filterChronostratigraphyAge?: FilterChronostratigraphyAge;
+  filterConfigurationByLithostratigraphyTerm?: FilterLithostratigraphyTerm;
   filterLayer?: Layer;
 }
 /**
@@ -196,7 +219,7 @@ const initialState: LayerState = {
         canFilter: false,
         canGetFeatureInfo: false,
         source: {
-          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
+          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/', 
           params: { 'LAYERS': 'Tecto_Lines', 'TILED': true },
           serverType: 'qgis',
           crossOrigin: 'anonymous',
@@ -321,6 +344,11 @@ const initialState: LayerState = {
             queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://dev-lexic.swissgeol.ch/TectonicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
             attributeToFilter: ['tecto_lexic']
           },
+          filterConfigurationByLithostratigraphyTerm: {
+            idVocabulary: 'Lithostratigraphy',
+            queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://dev-lexic.swissgeol.ch/Lithology/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
+            attributeToFilter: ['litstrat_lexic']
+          },
           filterLayer: {
             id: 'GC_BEDROCK_filtered',
             label: 'GC_BEDROCK_filtered',
@@ -369,6 +397,11 @@ const initialState: LayerState = {
             },
             chrono_to_lexic: {
               column: 'chrono_to_lexic',
+              type: 'link',
+              labelSourceForLink: 'vocabulary_label',
+            },
+            litstrat_lexic: {
+              column: 'litstrat_lexic',
               type: 'link',
               labelSourceForLink: 'vocabulary_label',
             },
@@ -635,6 +668,24 @@ export const layerMenuSlice = createSlice({
               }
             }
             break;
+          case 'filterByLithostratigraphyTerm':
+            console.log('Aggiungendo filterByLithostratigraphyTerm al layer:', filter);
+            if (!layer.filters.filterByLithostratigraphyTerm) {
+              layer.filters.filterByLithostratigraphyTerm = [];
+            }
+            if (filter.filterByLithostratigraphyTerm) {
+              const filterByLithostratigraphyTermArray = filter.filterByLithostratigraphyTerm as FilterByLithostratigraphyTermItem[];
+              const existingFilterIndex = layer.filters.filterByLithostratigraphyTerm.findIndex(f => f.term === filterByLithostratigraphyTermArray[0]?.term);
+
+              if (existingFilterIndex !== -1) {
+                layer.filters.filterByLithostratigraphyTerm[existingFilterIndex] = filterByLithostratigraphyTermArray[0];
+                console.log('Filtro aggiornato:', filter.filterByLithostratigraphyTerm);
+              } else {
+                layer.filters.filterByLithostratigraphyTerm.push(...filterByLithostratigraphyTermArray);
+                console.log('Filtro aggiunto:', filter.filterByLithostratigraphyTerm);
+              }
+            }
+            break;
           default:
             break;
         }
@@ -681,6 +732,10 @@ export const layerMenuSlice = createSlice({
         } else if (filterType === FiltersType.FilterByTectoUnitsTerm) {
           if (layerToUpdate.filters.filterByTectoUnitsTerm) {
             layerToUpdate.filters.filterByTectoUnitsTerm = layerToUpdate.filters.filterByTectoUnitsTerm.filter(term => term.term !== filterKey);
+          }
+        } else if (filterType === FiltersType.FilterByLithostratigraphyTerm) {
+          if (layerToUpdate.filters.filterByLithostratigraphyTerm) {
+            layerToUpdate.filters.filterByLithostratigraphyTerm = layerToUpdate.filters.filterByLithostratigraphyTerm.filter(term => term.term !== filterKey);
           }
         }
       }

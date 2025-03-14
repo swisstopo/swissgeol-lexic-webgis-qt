@@ -48,7 +48,7 @@ class QueryExecutor {
                 .setQuery(sparqlQuery)
                 .setQueryType(QueryType.SELECT)
                 .setResponseType(RDFMimeType.SPARQL_RESULTS_XML)
-                .setLimit(1000)
+                .setLimit(2000)
                 .setTimeout(50000);
 
             const queryStream = await repository.query(payload);

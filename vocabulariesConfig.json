@@ -12,5 +12,12 @@
         "repositoryId": "tektonik_swisstopo_public_core",
         "username": "",
         "password": ""
+    },
+    "Lithostratigraphy": {
+        "id": "Lithostratigraphy",
+        "url": "https://dev-graphdb.swissgeol.ch",
+        "repositoryId": "lithostratigraphy_swisstopo_public_core",
+        "username": "",
+        "password": ""
     }
 }
