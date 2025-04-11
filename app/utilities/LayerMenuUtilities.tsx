@@ -72,7 +72,8 @@ export const filtersNotEmpty = (filters: Filter | undefined): boolean => {
             (filters.filterByAttribute != undefined && filters.filterByAttribute.length > 0) ||
             (filters.filterByTectoUnitsTerm != undefined && filters.filterByTectoUnitsTerm.length > 0) ||
             (filters.filterChronostratigraphyAge != undefined && filters.filterChronostratigraphyAge.length > 0) ||
-            (filters.filterByLithostratigraphyTerm != undefined && filters.filterByLithostratigraphyTerm.length > 0)
+            (filters.filterByLithostratigraphyTerm != undefined && filters.filterByLithostratigraphyTerm.length > 0) ||
+            (filters.filterByLithologyTerm != undefined && filters.filterByLithologyTerm.length > 0)
         );
 }
 

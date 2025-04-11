@@ -14,6 +14,7 @@ export const createQueryString = (layer: Layer): string => {
         const byAttributeList = layer.filters?.filterByAttribute;
         const tectoTermsList = layer.filters?.filterByTectoUnitsTerm;
         const lithostratigraphyTermsList = layer.filters?.filterByLithostratigraphyTerm;
+        const lithologyTermsList = layer.filters?.filterByLithologyTerm;
         const chronostratigraphyTermsList = layer.filters?.filterChronostratigraphyAge;
 
         const conditions: string[] = [];
@@ -125,6 +126,30 @@ export const createQueryString = (layer: Layer): string => {
                 }
             }
         }
+        
+        // Filtering by lithology term
+        if (lithologyTermsList && lithologyTermsList.length > 0) {
+            const columns = getColumnNamesFromFilterConfiguration(layer, FiltersType.FilterByLithologyTerm);
+            const filterConfiguration = layer.filterConfiguration?.filterConfigurationByLithologyTerm;
+
+            if (columns && columns.length > 0 && filterConfiguration) {
+                const lithologyConditions: string[] = [];
+
+                columns.forEach((column) => {
+                    const values = lithologyTermsList.flatMap(termItem =>
+                        termItem.narrowers ? [termItem.term, ...termItem.narrowers] : [termItem.term]
+                    );
+                    const formattedValues = values.map(value => `\'${value}\'`).join(' , ');
+                    lithologyConditions.push(`"${column}" IN ( ${formattedValues} )`);
+                });
+
+                if (lithologyConditions.length > 1) {
+                    conditions.push(`( ${lithologyConditions.join(' OR ')} )`);
+                } else {
+                    conditions.push(lithologyConditions[0]);
+                }
+            }
+        }
 
         console.log('Layer filters:', layer.filters);
         console.log('Chrono terms:', chronostratigraphyTermsList);
@@ -164,6 +189,14 @@ const getColumnNamesFromFilterConfiguration = (layer: Layer, filterType: Filters
 
             if (filterConfigurationByLithostratigraphyTerm.attributeToFilter && filterConfigurationByLithostratigraphyTerm.attributeToFilter.length > 0) {
                 columns.push(...filterConfigurationByLithostratigraphyTerm.attributeToFilter);
+            }
+        }
+    } else if (filterType == FiltersType.FilterByLithologyTerm) {
+        if (layer.filterConfiguration && layer.filterConfiguration.filterConfigurationByLithologyTerm) {
+            const filterConfigurationByLithologyTerm = layer.filterConfiguration.filterConfigurationByLithologyTerm;
+
+            if (filterConfigurationByLithologyTerm.attributeToFilter && filterConfigurationByLithologyTerm.attributeToFilter.length > 0) {
+                columns.push(...filterConfigurationByLithologyTerm.attributeToFilter);
             }
         }
     }

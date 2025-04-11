@@ -674,7 +674,7 @@ describe('String Create Query', () => {
          */
         it('FilterByLithostratigraphyTerm with 1 Value without narrower', () => {
             const layer: Layer = {
-                id: 'Tecto_Units_augm_filtered',
+                id: 'GC_BEDROCK_filtered',
                 filters: {
                     filterByLithostratigraphyTerm: [
                         { term: 'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup', includeNarrowers: false }
@@ -682,11 +682,11 @@ describe('String Create Query', () => {
                 },
                 label: 'layer',
                 filterConfiguration: {
-                    layerName: 'Tecto_Units_augm_filtered',
+                    layerName: 'GC_BEDROCK_filtered',
                     filterConfigurationByLithostratigraphyTerm: {
                         idVocabulary: 'Lithostratigraphy',
                         queryNarrower: '',
-                        attributeToFilter: ['Litho_lexic']
+                        attributeToFilter: ['Litstrat_lexic']
                     },
                 },
                 isChecked: false,
@@ -695,7 +695,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('Tecto_Units_augm_filtered:"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' )');
+            expect(queryString).toBe('GC_BEDROCK_filtered:"Litstrat_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' )');
         });
 
         /**
@@ -717,11 +717,11 @@ describe('String Create Query', () => {
                     ]
                 },
                 filterConfiguration: {
-                    layerName: 'Tecto_Units_augm_filtered',
+                    layerName: 'GC_BEDROCK_filtered',
                     filterConfigurationByLithostratigraphyTerm: {
                         idVocabulary: 'Lithostratigraphy',
                         queryNarrower: '',
-                        attributeToFilter: ['Litho_lexic']
+                        attributeToFilter: ['Litstrat_lexic']
                     },
                 },
                 label: 'layer',
@@ -731,7 +731,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('Tecto_Units_augm_filtered:"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperFreshwaterMolasse\' )');
+            expect(queryString).toBe('GC_BEDROCK_filtered:"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperFreshwaterMolasse\' )');
         });
 
         /**
@@ -740,7 +740,7 @@ describe('String Create Query', () => {
          */
         it('FilterByLithostratigraphyTerm with multiple columns', () => {
             const layer: Layer = {
-                id: 'Tecto_Units_augm_filtered',
+                id: 'GC_BEDROCK_filtered',
                 filters: {
                     filterByLithostratigraphyTerm: [
                         {
@@ -753,11 +753,11 @@ describe('String Create Query', () => {
                     ]
                 },
                 filterConfiguration: {
-                    layerName: 'Tecto_Units_augm_filtered',
+                    layerName: 'GC_BEDROCK_filtered',
                     filterConfigurationByLithostratigraphyTerm: {
                         idVocabulary: 'Lithostratigraphy',
                         queryNarrower: '',
-                        attributeToFilter: ['Litho_lexic', 'litho_lexic']
+                        attributeToFilter: ['Litstrat_lexic', 'litho_lexic']
                     },
                 },
                 label: 'layer',
@@ -767,7 +767,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('Tecto_Units_augm_filtered:( "Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' ) OR "litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' ) )');
+            expect(queryString).toBe('GC_BEDROCK_filtered:( "Litstrat_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' ) OR "litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' ) )');
         });
 
         /**
@@ -776,7 +776,7 @@ describe('String Create Query', () => {
          */
         it('FilterByLithostratigraphyTerm with explicit queryNarrower', () => {
             const layer: Layer = {
-                id: 'Tecto_Units_augm_filtered',
+                id: 'GC_BEDROCK_filtered',
                 filters: {
                     filterByLithostratigraphyTerm: [
                         {
@@ -791,9 +791,149 @@ describe('String Create Query', () => {
                 },
                 label: 'layer',
                 filterConfiguration: {
-                    layerName: 'Tecto_Units_augm_filtered',
+                    layerName: 'GC_BEDROCK_filtered',
                     filterConfigurationByLithostratigraphyTerm: {
                         idVocabulary: 'Lithostratigraphy',
+                        queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://dev-lexic.swissgeol.ch/Lithostratigraphy/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
+                        attributeToFilter: ['Litstrat_lexic']
+                    },
+                },
+                isChecked: false,
+                canFilter: false,
+                canGetFeatureInfo: false
+            };
+
+            const queryString = createQueryString(layer);
+            expect(queryString).toBe('GC_BEDROCK_filtered:"Litstrat_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/LowerFreshwaterMolasse\' )');
+        });
+    });
+
+    describe('FilterByLithologyTerm', () => {
+        /**
+         * Tests filtering by a lithology term without narrowers
+         */
+        it('FilterByLithologyTerm with 1 Value without narrower', () => {
+            const layer: Layer = {
+                id: 'GC_BEDROCK_filtered',
+                filters: {
+                    filterByLithologyTerm: [
+                        { term: 'https://dev-lexic.swissgeol.ch/Lithology/MolasseGroup', includeNarrowers: false }
+                    ]
+                },
+                label: 'layer',
+                filterConfiguration: {
+                    layerName: 'GC_BEDROCK_filtered',
+                    filterConfigurationByLithologyTerm: {
+                        idVocabulary: 'Lithology',
+                        queryNarrower: '',
+                        attributeToFilter: ['Litho_lexic']
+                    },
+                },
+                isChecked: false,
+                canFilter: false,
+                canGetFeatureInfo: false
+            };
+
+            const queryString = createQueryString(layer);
+            expect(queryString).toBe('GC_BEDROCK_filtered:"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' )');
+        });
+
+        /**
+         * Tests filtering by a lithostratigraphic term with narrowers (subordinate rock units)
+         */
+        it('FilterByLithologyTerm with 1 Value with narrower', () => {
+            const layer: Layer = {
+                id: 'GC_BEDROCK_filtered',
+                filters: {
+                    filterByLithostratigraphyTerm: [
+                        {
+                            term: 'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup',
+                            narrowers: [
+                                'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse',
+                                'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperFreshwaterMolasse'
+                            ],
+                            includeNarrowers: true
+                        }
+                    ]
+                },
+                filterConfiguration: {
+                    layerName: 'GC_BEDROCK_filtered',
+                    filterConfigurationByLithostratigraphyTerm: {
+                        idVocabulary: 'Lithostratigraphy',
+                        queryNarrower: '',
+                        attributeToFilter: ['Litho_lexic']
+                    },
+                },
+                label: 'layer',
+                isChecked: false,
+                canFilter: false,
+                canGetFeatureInfo: false
+            };
+
+            const queryString = createQueryString(layer);
+            expect(queryString).toBe('GC_BEDROCK_filtered:"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperFreshwaterMolasse\' )');
+        });
+
+        /**
+         * Tests filtering by a lithostratigraphic term with multiple columns
+         * This allows searching for the term in different attribute columns
+         */
+        it('FilterByLithologyTerm with multiple columns', () => {
+            const layer: Layer = {
+                id: 'GC_BEDROCK_filtered',
+                filters: {
+                    filterByLithostratigraphyTerm: [
+                        {
+                            term: 'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup',
+                            narrowers: [
+                                'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse'
+                            ],
+                            includeNarrowers: true
+                        }
+                    ]
+                },
+                filterConfiguration: {
+                    layerName: 'GC_BEDROCK_filtered',
+                    filterConfigurationByLithostratigraphyTerm: {
+                        idVocabulary: 'Lithlogy',
+                        queryNarrower: '',
+                        attributeToFilter: ['Litho_lexic', 'litho_lexic']
+                    },
+                },
+                label: 'layer',
+                isChecked: false,
+                canFilter: false,
+                canGetFeatureInfo: false
+            };
+
+            const queryString = createQueryString(layer);
+            expect(queryString).toBe('GC_BEDROCK_filtered:( "Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' ) OR "litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' ) )');
+        });
+
+        /**
+         * Tests filtering by a lithostratigraphic term with explicit queryNarrower definition
+         * This allows retrieving subordinate units using a SPARQL query
+         */
+        it('FilterByLithologyTerm with explicit queryNarrower', () => {
+            const layer: Layer = {
+                id: 'GC_BEDROCK_filtered',
+                filters: {
+                    filterByLithostratigraphyTerm: [
+                        {
+                            term: 'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup',
+                            includeNarrowers: true,
+                            narrowers: [
+                                'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse',
+                                'https://dev-lexic.swissgeol.ch/Lithostratigraphy/LowerFreshwaterMolasse'
+                            ]
+                        }
+                    ]
+                },
+                label: 'layer',
+                filterConfiguration: {
+                    layerName: 'GC_BEDROCK_filtered',
+                    filterConfigurationByLithostratigraphyTerm: {
+                        idVocabulary: 'Lithology',
                         queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://dev-lexic.swissgeol.ch/Lithostratigraphy/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
                         attributeToFilter: ['Litho_lexic']
                     },
@@ -804,7 +944,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('Tecto_Units_augm_filtered:"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/LowerFreshwaterMolasse\' )');
+            expect(queryString).toBe('GC_BEDROCK_filtered:"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/LowerFreshwaterMolasse\' )');
         });
     });
 
@@ -902,4 +1042,5 @@ describe('String Create Query', () => {
         const queryString = createQueryString(layer);
         expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' ) AND "Chrono_from_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' ) AND "Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' )');
     });
+    //
 });

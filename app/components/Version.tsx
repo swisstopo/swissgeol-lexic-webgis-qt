@@ -17,7 +17,7 @@ const VersionBox = () => {
                 fontWeight="$small"
                 textAlign='right'
             >
-                v0.3.0-pilot
+                v0.4.0-pilot
             </Text>
         </Box>
     );

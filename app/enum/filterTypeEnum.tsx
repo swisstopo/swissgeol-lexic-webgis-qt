@@ -7,6 +7,7 @@ export enum FiltersType {
     FilterByTectoUnitsTerm = 'filterByTectoUnitsTerm', //Identifies a filter type based on tectonic units terms.
     FilterByChronostratigraphy= 'filterByChronostratigraphy', //Identifies a filter type based on chronostratigraphy terms.
     FilterByLithostratigraphyTerm = 'filterByLithostratigraphyTerm', //Identifies a filter type based on lithostratigraphy terms.
+    FilterByLithologyTerm = 'filterByLithologyTerm', //Identifies a filter type based on lithology terms.
     
 }
 

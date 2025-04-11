@@ -19,5 +19,12 @@
         "repositoryId": "lithostratigraphy_swisstopo_public_core",
         "username": "",
         "password": ""
+    },
+    "Lithology": {
+        "id": "Lithology",
+        "url": "https://dev-graphdb.swissgeol.ch",
+        "repositoryId": "lithology_swisstopo_public_core",
+        "username": "",
+        "password": ""
     }
 }
