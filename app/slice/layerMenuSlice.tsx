@@ -375,7 +375,7 @@ const initialState: LayerState = {
           filterConfigurationByLithologyTerm: {
             idVocabulary: 'Lithology',
             queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://dev-lexic.swissgeol.ch/Lithology/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
-            attributeToFilter: ['	litho_lexic_1', '	litho_lexic_2', '	litho_lexic_3']
+            attributeToFilter: ['litho_lexic_1', 'litho_lexic_2', 'litho_lexic_3']
           },
           filterLayer: {
             id: 'GC_BEDROCK_filtered',
@@ -433,9 +433,45 @@ const initialState: LayerState = {
               type: 'link',
               labelSourceForLink: 'vocabulary_label',
             },
+            litho_lexic_1: {
+              column: 'litho_lexic_1',
+              type: 'link',
+              labelSourceForLink: 'vocabulary_label',
+            },
+            litho_lexic_2: {
+              column: 'litho_lexic_2',
+              type: 'link',
+              labelSourceForLink: 'vocabulary_label',
+            },
+            litho_lexic_3: {
+              column: 'litho_lexic_3',
+              type: 'link',
+              labelSourceForLink: 'vocabulary_label',
+            }
           },
         },
-      }, {
+      },
+      {
+        id: "GC_BEDROCK_colored",
+        label: "GC_BEDROCK (color schema)",
+        isChecked: false,
+        canFilter: false,
+        filters: undefined,
+        canGetFeatureInfo: false,
+        source: {
+          url: "https://dev-ogcservices.swissgeol.ch/qgis-server/",
+          params: {
+            LAYERS: "GC_BEDROCK_colored",
+          },
+          serverType: "qgis",
+          crossOrigin: "anonymous",
+        },
+        style: {
+          opacity: 0.3,
+        },
+        zIndex: 4,
+      },
+      {
         id: 'GC_UNCO_DEPOSITS',
         label: 'GC_UNCO_DEPOSITS',
         isChecked: false,
