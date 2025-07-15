@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import layerMenuSlice from '../slice/layerMenuSlice'
 import vocabulariesSlice from '../slice/vocabularySlice'
+import configSlice from '../slice/configSlice'
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ export const store = configureStore({
      * - Initial State of Layer
      */
     layerMenuSlice: layerMenuSlice,
-        vocabulariesSlice: vocabulariesSlice,
+    vocabulariesSlice: vocabulariesSlice,
+    config: configSlice,
   },
 })
 

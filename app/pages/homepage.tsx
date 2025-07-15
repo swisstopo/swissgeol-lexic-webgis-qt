@@ -23,7 +23,7 @@ const HomePage: React.FC = () => {
         return response.json();
       })
       .then(data => {
-        console.log('Fetched data:', data);
+        console.log('Fetched data cache:', data);
         dispatch(setCache(data));
         setIsCacheLoaded(true);
       })

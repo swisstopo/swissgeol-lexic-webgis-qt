@@ -1,4 +1,4 @@
-import vocabulariesConfig from '../../vocabulariesConfig.json';
+import { type VocabulariesConfig, type VocabularyConfig, getConfig } from '../config';
 import { GraphDBClient, QueryExecutor, getConfigDB, getQueryConfig } from './graphdb_connector';
 
 interface NamedNode {
@@ -21,16 +21,22 @@ interface ConceptQueryResult {
  * to get all the terms in the vocabularies in the configuration.
  * @returns
  */
-export async function fetchVocabulariesData() {
-    const vocabulariesArray = Object.values(vocabulariesConfig);
+export async function fetchVocabulariesData(vocabulariesConfig: VocabulariesConfig) {
+    const appConfig = await getConfig();
+    const vocabulariesArray: VocabularyConfig[] = Object.values(vocabulariesConfig);
     const results: { [key: string]: { label: string; value: string }[] } = {};
 
     for (const vocab of vocabulariesArray) {
-        const { url, username, password } = getConfigDB(vocab.id);
+        const config = getConfigDB(vocab.id, vocabulariesConfig);
+        if (!config) {
+            console.warn(`Configuration for vocabulary '${vocab.id}' not found. Skipping.`);
+            continue;
+        }
+        const { url, username, password } = config;
         const repositoryUrl = `${url}/repositories/${vocab.repositoryId}`;
         const client = new GraphDBClient(url, username, password);
 
-        const { allConcept } = getQueryConfig(vocab.id);
+        const { allConcept } = getQueryConfig(vocab.id, appConfig.vocabularyPrefixUrl);
         const queryExecutor = new QueryExecutor(client, vocab.repositoryId, url, username, password, repositoryUrl);
 
         let sparqlQuery = allConcept;
@@ -75,14 +81,19 @@ export async function fetchVocabulariesData() {
  * @returns A promise that resolves to an array of narrower concept IDs retrieved from the vocabulary
  * @throws An error if the SPARQL query execution fails
  */
-export async function fetchVocabolaryTermByQuery(query: string, vocabId: string) {
-    const vocabulariesArray = Object.values(vocabulariesConfig);
+export async function fetchVocabolaryTermByQuery(query: string, vocabId: string, vocabulariesConfig: VocabulariesConfig) {
+    const vocabulariesArray: VocabularyConfig[] = Object.values(vocabulariesConfig);
     const results: string[] = [];
 
     for (const vocab of vocabulariesArray) {
         if (vocabId === vocab.id) {
-            const { url, username, password } = getConfigDB(vocab.id);
-            const repositoryUrl = `${url}/repositories/${vocab.repositoryId} `;
+            const config = getConfigDB(vocab.id, vocabulariesConfig);
+            if (!config) {
+                console.warn(`Configuration for vocabulary '${vocab.id}' not found. Skipping.`);
+                continue;
+            }
+            const { url, username, password } = config;
+            const repositoryUrl = `${url}/repositories/${vocab.repositoryId}`;
             const client = new GraphDBClient(url, username, password);
 
             const queryExecutor = new QueryExecutor(client, vocab.repositoryId, url, username, password, repositoryUrl);

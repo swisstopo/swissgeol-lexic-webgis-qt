@@ -86,7 +86,7 @@ export const getSourceById = (layers: Layer[], id: string): TileWMS | undefined 
     }
 
     const sourceConfig = layer.source;
-    if (sourceConfig.serverType !== 'qgis') {
+    if (sourceConfig.serverType !== 'qgis' && sourceConfig.serverType !== 'geoserver') {
         throw new Error('Il serverType della source non è corretto');
     }
 

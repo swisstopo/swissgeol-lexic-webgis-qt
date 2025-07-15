@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getVocabulariesConfig } from '../../app/config';
 import { fetchVocabolaryTermByQuery, fetchVocabulariesData } from '../../app/libs/graphDbWrapper';
 /**
  * API route handler for managing vocabulary-related requests
@@ -33,8 +34,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (query && vocabulary) {
         if (req.method === 'POST') {
             try {
+                const vocabulariesConfig = await getVocabulariesConfig();
                 let data;
-                data = await fetchVocabolaryTermByQuery(query, vocabulary);
+                data = await fetchVocabolaryTermByQuery(query, vocabulary, vocabulariesConfig);
                 res.status(200).json(data);
             } catch (error) {
                 console.error('Failed to fetch data from GraphDB:', error);
@@ -47,7 +49,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else {
         if (req.method === 'GET') {
             try {
-                const data = await fetchVocabulariesData();
+                const vocabulariesConfig = await getVocabulariesConfig();
+                const data = await fetchVocabulariesData(vocabulariesConfig);
                 res.status(200).json(data);
             } catch (error) {
                 console.error('Failed to fetch data from GraphDB:', error);

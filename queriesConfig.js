@@ -2,7 +2,7 @@ export const chronoQueries = {
   queryYounger: `
   PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
   PREFIX time: <http://www.w3.org/2006/time#>
-  PREFIX ex: <https://dev-lexic.swissgeol.ch/Chronostratigraphy/>
+  PREFIX ex: <\${prefix}/Chronostratigraphy/>
   
   SELECT DISTINCT ?concept
   WHERE {
@@ -42,7 +42,7 @@ export const chronoQueries = {
   queryOlder: `
   PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
   PREFIX time: <http://www.w3.org/2006/time#>
-  PREFIX ex: <https://dev-lexic.swissgeol.ch/Chronostratigraphy/>
+  PREFIX ex: <\${prefix}/Chronostratigraphy/>
   
   SELECT DISTINCT ?concept
   WHERE {
@@ -98,7 +98,7 @@ export const chronoQueries = {
   queryBetween: `
   PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
   PREFIX time: <http://www.w3.org/2006/time#>
-  PREFIX ex: <https://dev-lexic.swissgeol.ch/Chronostratigraphy/>
+  PREFIX ex: <\${prefix}/Chronostratigraphy/>
 
   SELECT DISTINCT ?concept
   WHERE {

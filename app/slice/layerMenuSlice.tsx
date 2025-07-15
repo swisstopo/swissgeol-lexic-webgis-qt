@@ -1,25 +1,29 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { findLayerById } from '../utilities/LayerMenuUtilities';
-import { FilterOptionChronostratigraphy, FiltersType } from '../enum/filterTypeEnum';
-import { chronoQueries } from '../../queriesConfig';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { findLayerById } from "../utilities/LayerMenuUtilities";
+import {
+  FilterOptionChronostratigraphy,
+  FiltersType,
+} from "../enum/filterTypeEnum";
+import { chronoQueries } from "../../queriesConfig";
+import { fetchConfig } from "./configSlice";
 
 /**
-* Represents an object that can be filtered based on specific criteria.
-*
-* The `Filterable` interface is used to define objects that have filtering capabilities.
-* It includes an optional `filters` property, which specifies the filtering criteria that can be applied to the object.
-*
-*/
+ * Represents an object that can be filtered based on specific criteria.
+ *
+ * The `Filterable` interface is used to define objects that have filtering capabilities.
+ * It includes an optional `filters` property, which specifies the filtering criteria that can be applied to the object.
+ *
+ */
 export interface Filterable {
   filters?: Filter;
 }
 
 /**
-*Defines the Layer to be added on the map with all the parameters that benefit the manipulation and updating of them:
-* 
-*Details:
-* - isIndeterminate indicates whether all children are checked or not, modifying the check icon accordingly. 
-*/
+ *Defines the Layer to be added on the map with all the parameters that benefit the manipulation and updating of them:
+ *
+ *Details:
+ * - isIndeterminate indicates whether all children are checked or not, modifying the check icon accordingly.
+ */
 export interface Layer extends Filterable {
   id: string;
   label: string;
@@ -36,12 +40,12 @@ export interface Layer extends Filterable {
   attributesConfiguration?: AttributesConfiguration;
 }
 /**
-* Defines the type of filter that can be applied to the layer.
-*/
+ * Defines the type of filter that can be applied to the layer.
+ */
 export interface Filter {
   filterByAttribute?: FilterByAttribute[];
   filterByTectoUnitsTerm?: FilterByTectoUnitsTermItem[];
-  filterChronostratigraphyAge?: FilterChronostratigraphyAgeItem[]
+  filterChronostratigraphyAge?: FilterChronostratigraphyAgeItem[];
   filterByLithostratigraphyTerm?: FilterByLithostratigraphyTermItem[];
   filterByLithologyTerm?: FilterByLithologyTermItem[];
 }
@@ -54,12 +58,12 @@ export interface Filter {
 
 /**
  * Interface representing an override for an attribute's configuration
- * 
+ *
  */
 export interface AttributeOverride {
   column?: string;
-  type?: 'text' | 'link';
-  labelSourceForLink?: 'link' | 'vocabulary_label';
+  type?: "text" | "link";
+  labelSourceForLink?: "link" | "vocabulary_label";
 }
 
 export interface FilterByTectoUnitsTermItem {
@@ -82,11 +86,11 @@ export interface FilterByLithologyTermItem {
 
 /**
  * Interface representing a filter configuration for tectonic units
- * 
- * This interface defines the configuration for filtering based on tectonic units. 
+ *
+ * This interface defines the configuration for filtering based on tectonic units.
  * It includes the vocabulary ID, a query for narrower terms, and a list of attributes to be filtered.
- * 
- * @property idVocabulary 
+ *
+ * @property idVocabulary
  * @property queryNarrower - The SPARQL query to find narrower terms
  * @property attributeToFilter
  */
@@ -97,11 +101,11 @@ export interface FilterTectoUnitsTerm {
 }
 /**
  * Interface representing a filter configuration for lithostratigraphy term
- * 
- * This interface defines the configuration for filtering based on lithostratigraphy. 
+ *
+ * This interface defines the configuration for filtering based on lithostratigraphy.
  * It includes the vocabulary ID, a query for narrower terms, and a list of attributes to be filtered.
- * 
- * @property idVocabulary 
+ *
+ * @property idVocabulary
  * @property queryNarrower - The SPARQL query to find narrower terms
  * @property attributeToFilter
  */
@@ -112,11 +116,11 @@ export interface FilterLithostratigraphyTerm {
 }
 /**
  * Interface representing a filter configuration for lithology term
- * 
- * This interface defines the configuration for filtering based on lithology. 
+ *
+ * This interface defines the configuration for filtering based on lithology.
  * It includes the vocabulary ID, a query for narrower terms, and a list of attributes to be filtered.
- * 
- * @property idVocabulary 
+ *
+ * @property idVocabulary
  * @property queryNarrower - The SPARQL query to find narrower terms
  * @property attributeToFilter
  */
@@ -127,11 +131,11 @@ export interface FilterLithologyTerm {
 }
 /**
  * Interface representing a filter configuration for chronostratigraphy age
- * 
- * This interface defines the configuration for filtering based on chronostratigraphy age. 
+ *
+ * This interface defines the configuration for filtering based on chronostratigraphy age.
  * It includes the vocabulary ID, queries for different age ranges, and identifiers for older and younger ages.
- * 
- * @property idVocabulary 
+ *
+ * @property idVocabulary
  * @property queryBetween - The SPARQL query to filter between a range of ages
  * @property queryYounger - The SPARQL query to filter for younger ages
  * @property queryOlder - The SPARQL query to filter for older ages
@@ -148,43 +152,43 @@ export interface FilterChronostratigraphyAgeItem {
 }
 
 export interface FilterChronostratigraphyAge {
-  queryYounger_strict: string,
-  queryOlder_strict: string,
-  queryBetween_strict: string,
-  columnToFilterYon: string,
-  columnToFilterOld: string,
+  queryYounger_strict: string;
+  queryOlder_strict: string;
+  queryBetween_strict: string;
+  columnToFilterYon: string;
+  columnToFilterOld: string;
 }
 /**
  * Configuration for managing attributes in a layer.
- * 
+ *
  * The `AttributesConfiguration` interface defines how attributes are configured and overridden for a specific layer.
  * It includes the following properties:
- * 
+ *
  * - `attributes` (optional): An array of attribute names that are associated with the layer. These attributes define the properties
  *   or fields available in the layer.
- * 
+ *
  * - `attributeOverrides` (optional): A record where each key is an attribute name and each value is an `AttributeOverride` object.
  *   This allows for customization or overriding of attribute settings, such as changing display labels or specifying different types
  *   for attributes.
- * 
+ *
  * This interface is used to provide detailed configuration options for attributes, including default attributes and any customizations
  * required for specific use cases or display requirements.
- * 
+ *
  */
 export interface AttributesConfiguration {
   attributes?: string[];
   attributeOverrides?: Record<string, AttributeOverride>;
 }
 /**
-* Filter type characterized by key and value.
-*/
+ * Filter type characterized by key and value.
+ */
 export interface FilterByAttribute {
   key: string;
   value: string;
 }
 /**
-* Defines properties for adding a filter to a layer.
-*/
+ * Defines properties for adding a filter to a layer.
+ */
 export interface FilterConfiguration {
   layerName: string;
   filterConfigurationByAttribute?: { key: string; label: string }[];
@@ -195,379 +199,429 @@ export interface FilterConfiguration {
   filterLayer?: Layer;
 }
 /**
-* Defines layer state properties at the application level.
-*/
+ * Defines layer state properties at the application level.
+ */
 export interface LayerState {
   layers: Layer[];
   iconFilterLayers: string | undefined;
   /* columnOverrideAttribute?: string[]; */
 }
 /**
-* Defines the properties that make up the sources to call up the various layers to be displayed on the map.
-*/
+ * Defines the properties that make up the sources to call up the various layers to be displayed on the map.
+ */
 export interface Source {
-  url: string,
-  params: Record<string, string | boolean>,
-  serverType: string,
-  crossOrigin: string,
+  url: string;
+  urlWMTS?: string;
+  params: Record<string, string | boolean>;
+  paramsWMTS?: Record<string, string | boolean>;
+  serverType: string;
+  crossOrigin: string;
 }
 /**
-* Defines the style of the layers. 
-*/
+ * Defines the style of the layers.
+ */
 export interface Style {
   opacity: number;
 }
 
 /* INTERFACE FILTER INITIAL STATE WITHOUT FILTERS */
 /**
-*Initial status of the application:
-* Contains:
-* - layer
-* - source of the layers.
-* - initial style of the layers.
-*/
+ *Initial status of the application:
+ * Contains:
+ * - layer
+ * - source of the layers.
+ * - initial style of the layers.
+ */
 const initialState: LayerState = {
   layers: [
     {
-      id: 'TK500',
-      label: 'TK500',
+      id: "TK500",
+      label: "TK500",
       isChecked: true,
       canFilter: false,
       canGetFeatureInfo: false,
       isIndeterminate: true,
-      children: [{
-        id: 'Tecto_Lines',
-        label: 'Tectonic Lines',
-        isChecked: false,
-        canFilter: false,
-        canGetFeatureInfo: false,
-        source: {
-          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/', 
-          params: { 'LAYERS': 'Tecto_Lines', 'TILED': true },
-          serverType: 'qgis',
-          crossOrigin: 'anonymous',
-        },
-        style: {
-          opacity: 0.3,
-        },
-        zIndex: 9,
-      }, {
-        id: 'Quat_Surfaces',
-        label: 'Quat Surfaces',
-        isChecked: false,
-        canFilter: false,
-        canGetFeatureInfo: false,
-        source: {
-          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
-          params: { 'LAYERS': 'Quat_Surfaces', 'TILED': true },
-          serverType: 'qgis',
-          crossOrigin: 'anonymous',
-        },
-        style: {
-          opacity: 0.3,
-        },
-        zIndex: 8,
-      }, {
-        id: 'Tecto_Units_augm',
-        label: 'Tectonic Units',
-        isChecked: true,
-        canFilter: true,
-        filters: undefined,
-        filterConfiguration: {
-          layerName: 'Tecto_Units_augm_filtered',
-          filterChronostratigraphyAge: {
-            columnToFilterOld: 'Chrono_from_lexic',
-            columnToFilterYon: 'Chrono_to_lexic',
-            queryYounger_strict: chronoQueries.queryYounger,
-            queryOlder_strict: chronoQueries.queryOlder,
-            queryBetween_strict: chronoQueries.queryBetween,
+      children: [
+        {
+          id: "Tecto_Lines",
+          label: "Tectonic Lines",
+          isChecked: false,
+          canFilter: false,
+          canGetFeatureInfo: false,
+          source: {
+            url: `{{GEOSERVER_BASE_URL}}/wms`,
+            urlWMTS:
+              `{{GEOSERVER_BASE_URL}}/tecto_lines/gwc/service/wmts?SERVICE=WMTS&VERSION=1.1.1&REQUEST=GetCapabilities`,
+            params: { LAYERS: "tecto_lines", TILED: true },
+            paramsWMTS: {
+              layer: "tecto_lines",
+              style: "swisstopo:tecto_lines",
+              matrixSet: "EPSG:2056",
+              format: "image/png",
+            },
+            serverType: "geoserver",
+            crossOrigin: "anonymous",
           },
-          filterConfigurationByTectoUnitsTerm: {
-            idVocabulary: 'TectonicUnits',
-            queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://dev-lexic.swissgeol.ch/TectonicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
-            attributeToFilter: ['Tecto_lexic']
+          style: {
+            opacity: 0.3,
           },
-          filterLayer: {
-            id: 'Tecto_Units_augm_filtered',
-            label: 'Tecto_Units_augm_filtered',
-            isChecked: true,
-            canFilter: false,
-            canGetFeatureInfo: false,
-            source: {
-              url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
-              params: {
-                'LAYERS': 'Tecto_Units_augm_filtered', 'TILED': true,
-                'FILTER': 'Tecto_Units_augm_filtered:1=0'
+          zIndex: 9,
+        },
+        {
+          id: "Quat_Surfaces",
+          label: "Quat Surfaces",
+          isChecked: false,
+          canFilter: false,
+          canGetFeatureInfo: false,
+          source: {
+            url: `{{GEOSERVER_BASE_URL}}/wms`,
+            urlWMTS:
+              `{{GEOSERVER_BASE_URL}}/quat_surfaces/gwc/service/wmts?SERVICE=WMTS&VERSION=1.1.1&REQUEST=GetCapabilities`,
+            params: { LAYERS: "quat_surfaces", TILED: true },
+            paramsWMTS: {
+              layer: "quat_surfaces",
+              style: "swisstopo:quat_surfaces",
+              matrixSet: "EPSG:2056",
+              format: "image/png",
+            },
+            serverType: "geoserver",
+            crossOrigin: "anonymous",
+          },
+          style: {
+            opacity: 0.3,
+          },
+          zIndex: 8,
+        },
+        {
+          id: "tecto_units_augm",
+          label: "Tectonic Units",
+          isChecked: true,
+          canFilter: true,
+          filters: undefined,
+          filterConfiguration: {
+            layerName: "Tecto_Units_augm_filtered",
+            filterChronostratigraphyAge: {
+              columnToFilterOld: "chrono_from_lexic",
+              columnToFilterYon: "chrono_to_lexic",
+              queryYounger_strict: chronoQueries.queryYounger,
+              queryOlder_strict: chronoQueries.queryOlder,
+              queryBetween_strict: chronoQueries.queryBetween,
+            },
+            filterConfigurationByTectoUnitsTerm: {
+              idVocabulary: "TectonicUnits",
+              queryNarrower:"PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <\${prefix}/TectonicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}",
+              attributeToFilter: ["tecto_lexic"],
+            },
+            filterLayer: {
+              id: "Tecto_Units_augm_filtered",
+              label: "Tecto_Units_augm_filtered",
+              isChecked: true,
+              canFilter: false,
+              canGetFeatureInfo: false,
+              source: {
+                url: `{{GEOSERVER_BASE_URL}}/wms`,
+                params: {
+                  LAYERS: "tecto_units_augm",
+                  TILED: true,
+                  STYLES: "swisstopo:filtered",
+                  CQL_FILTER: "1=0",
+                },
+                serverType: "geoserver",
+                crossOrigin: "anonymous",
               },
-              serverType: 'qgis',
-              crossOrigin: 'anonymous',
-            },
-            style: {
-              opacity: 1.0,
-            },
-            zIndex: 7,
-          },
-        },
-        canGetFeatureInfo: true,
-        source: {
-          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
-          params: { 'LAYERS': 'Tecto_Units_augm', 'TILED': true },
-          serverType: 'qgis',
-          crossOrigin: 'anonymous',
-        },
-        style: {
-          opacity: 0.3,
-        },
-        zIndex: 6,
-        attributesConfiguration: {
-          attributeOverrides: {
-            Tecto_lexic: {
-              column: 'Tecto_lexic',
-              type: 'link',
-              labelSourceForLink: 'vocabulary_label',
-            },
-            Chrono_from_lexic: {
-              column: 'Chrono_from_lexic',
-              type: 'link',
-              labelSourceForLink: 'vocabulary_label',
-            },
-            Chrono_to_lexic: {
-              column: 'Chrono_to_lexic',
-              type: 'link',
-              labelSourceForLink: 'vocabulary_label',
+              style: {
+                opacity: 1.0,
+              },
+              zIndex: 7,
             },
           },
+          canGetFeatureInfo: true,
+          source: {
+            url: `{{GEOSERVER_BASE_URL}}/wms`,
+            urlWMTS: `{{GEOSERVER_BASE_URL}}/tecto_units_augm/gwc/service/wmts?SERVICE=WMTS&VERSION=1.1.1&REQUEST=GetCapabilities`,
+            params: {
+              LAYERS: "tecto_units_augm",
+            },
+            paramsWMTS: {
+              layer: "tecto_units_augm",
+              style: "swisstopo:tecto_units_augm",
+              matrixSet: "EPSG:2056",
+              format: "image/png",
+            },
+            serverType: "geoserver",
+            crossOrigin: "anonymous",
+          },
+          style: {
+            opacity: 0.3,
+          },
+          zIndex: 6,
+          attributesConfiguration: {
+            attributeOverrides: {
+              tecto_lexic: {
+                column: "tecto_lexic",
+                type: "link",
+                labelSourceForLink: "vocabulary_label",
+              },
+              chrono_from_lexic: {
+                column: "chrono_from_lexic",
+                type: "link",
+                labelSourceForLink: "vocabulary_label",
+              },
+              chrono_to_lexic: {
+                column: "chrono_to_lexic",
+                type: "link",
+                labelSourceForLink: "vocabulary_label",
+              },
+            },
+          },
         },
-      }],
+      ],
     },
     {
-      id: 'geocover',
-      label: 'GeoCover - Vektordaten',
+      id: "geocover",
+      label: "GeoCover - Vektordaten",
       isChecked: false,
       canFilter: false,
       isIndeterminate: false,
       canGetFeatureInfo: false,
-      children: [{
-        id: 'GC_BEDROCK',
-        label: 'GC_BEDROCK',
-        isChecked: false,
-        canFilter: true,
-        filters: undefined,
-        filterConfiguration: {
-          layerName: 'GC_BEDROCK_filtered',
-          filterChronostratigraphyAge: {
-            columnToFilterOld: 'chrono_from_lexic',
-            columnToFilterYon: 'chrono_to_lexic',
-            queryYounger_strict: chronoQueries.queryYounger,
-            queryOlder_strict: chronoQueries.queryOlder,
-            queryBetween_strict: chronoQueries.queryBetween,
-          },
-          filterConfigurationByTectoUnitsTerm: {
-            idVocabulary: 'TectonicUnits',
-            queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://dev-lexic.swissgeol.ch/TectonicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
-            attributeToFilter: ['tecto_lexic']
-          },
-          filterConfigurationByLithostratigraphyTerm: {
-            idVocabulary: 'Lithostratigraphy',
-            queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://dev-lexic.swissgeol.ch/LithostratigraphicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
-            attributeToFilter: ['litstrat_lexic']
-          },
-          filterConfigurationByLithologyTerm: {
-            idVocabulary: 'Lithology',
-            queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://dev-lexic.swissgeol.ch/Lithology/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
-            attributeToFilter: ['litho_lexic_1', 'litho_lexic_2', 'litho_lexic_3']
-          },
-          filterLayer: {
-            id: 'GC_BEDROCK_filtered',
-            label: 'GC_BEDROCK_filtered',
-            isChecked: false,
-            canFilter: false,
-            canGetFeatureInfo: false,
-            source: {
-              url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
-              params: {
-                'LAYERS': 'GC_BEDROCK_filtered', 'TILED': true,
-                'FILTER': 'GC_BEDROCK_filtered:1=0'
+      children: [
+        {
+          id: "gc_bedrock",
+          label: "GC_BEDROCK",
+          isChecked: false,
+          canFilter: true,
+          filters: undefined,
+          filterConfiguration: {
+            layerName: "GC_BEDROCK",
+            filterChronostratigraphyAge: {
+              columnToFilterOld: "chrono_from_lexic",
+              columnToFilterYon: "chrono_to_lexic",
+              queryYounger_strict: chronoQueries.queryYounger,
+              queryOlder_strict: chronoQueries.queryOlder,
+              queryBetween_strict: chronoQueries.queryBetween,
+            },
+            filterConfigurationByTectoUnitsTerm: {
+              idVocabulary: "TectonicUnits",
+              queryNarrower:"PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <\${prefix}/TectonicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}",
+              attributeToFilter: ["tecto_lexic"],
+            },
+            filterConfigurationByLithostratigraphyTerm: {
+              idVocabulary: "Lithostratigraphy",
+              queryNarrower:"PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <\${prefix}/LithostratigraphicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}",
+              attributeToFilter: ["litstrat_lexic"],
+            },
+            filterConfigurationByLithologyTerm: {
+              idVocabulary: "Lithology",
+              queryNarrower:"PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <\${prefix}/Lithology/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}",
+              attributeToFilter: [
+                "litho_lexic_1",
+                "litho_lexic_2",
+                "litho_lexic_3",
+              ],
+            },
+            filterLayer: {
+              id: "gc_bedrock_filtered",
+              label: "gc_bedrock",
+              isChecked: false,
+              canFilter: false,
+              canGetFeatureInfo: false,
+              source: {
+                url: `{{GEOSERVER_BASE_URL}}/wms`,
+                params: {
+                  LAYERS: "gc_bedrock",
+                  TILED: true,
+                  STYLES: "swisstopo:filtered",
+                  CQL_FILTER: "1=0",
+                },
+                serverType: "geoserver",
+                crossOrigin: "anonymous",
               },
-              serverType: 'qgis',
-              crossOrigin: 'anonymous',
-            },
-            style: {
-              opacity: 1.0,
-            },
-            zIndex: 5,
-          },
-        },
-        canGetFeatureInfo: true,
-        source: {
-          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
-          params: {
-            'LAYERS': 'GC_BEDROCK',
-          },
-          serverType: 'qgis',
-          crossOrigin: 'anonymous',
-        },
-        style: {
-          opacity: 0.3,
-        },
-        zIndex: 4,
-        attributesConfiguration: {
-          attributeOverrides: {
-            tecto_lexic: {
-              column: 'tecto_lexic',
-              type: 'link',
-              labelSourceForLink: 'vocabulary_label',
-            },
-            chrono_from_lexic: {
-              column: 'chrono_from_lexic',
-              type: 'link',
-              labelSourceForLink: 'vocabulary_label',
-            },
-            chrono_to_lexic: {
-              column: 'chrono_to_lexic',
-              type: 'link',
-              labelSourceForLink: 'vocabulary_label',
-            },
-            litstrat_lexic: {
-              column: 'litstrat_lexic',
-              type: 'link',
-              labelSourceForLink: 'vocabulary_label',
-            },
-            litho_lexic_1: {
-              column: 'litho_lexic_1',
-              type: 'link',
-              labelSourceForLink: 'vocabulary_label',
-            },
-            litho_lexic_2: {
-              column: 'litho_lexic_2',
-              type: 'link',
-              labelSourceForLink: 'vocabulary_label',
-            },
-            litho_lexic_3: {
-              column: 'litho_lexic_3',
-              type: 'link',
-              labelSourceForLink: 'vocabulary_label',
-            }
-          },
-        },
-      },
-      {
-        id: "GC_BEDROCK_colored",
-        label: "GC_BEDROCK (color schema)",
-        isChecked: false,
-        canFilter: false,
-        filters: undefined,
-        canGetFeatureInfo: false,
-        source: {
-          url: "https://dev-ogcservices.swissgeol.ch/qgis-server/",
-          params: {
-            LAYERS: "GC_BEDROCK_colored",
-          },
-          serverType: "qgis",
-          crossOrigin: "anonymous",
-        },
-        style: {
-          opacity: 0.3,
-        },
-        zIndex: 4,
-      },
-      {
-        id: 'GC_UNCO_DEPOSITS',
-        label: 'GC_UNCO_DEPOSITS',
-        isChecked: false,
-        canFilter: true,
-        filters: undefined,
-        filterConfiguration: {
-          layerName: 'GC_UNCO_DEPOSITS_filtered',
-          filterChronostratigraphyAge: {
-            columnToFilterOld: 'chrono_from_lexic',
-            columnToFilterYon: 'chrono_to_lexic',
-            queryYounger_strict: chronoQueries.queryYounger,
-            queryOlder_strict: chronoQueries.queryOlder,
-            queryBetween_strict: chronoQueries.queryBetween,
-          },
-          filterLayer: {
-            id: 'GC_UNCO_DEPOSITS_filtered',
-            label: 'GC_UNCO_DEPOSITS_filtered',
-            isChecked: false,
-            canFilter: false,
-            canGetFeatureInfo: false,
-            source: {
-              url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
-              params: {
-                'LAYERS': 'GC_UNCO_DEPOSITS_filtered', 'TILED': true,
-                'FILTER': 'GC_UNCO_DEPOSITS_filtered:1=0'
+              style: {
+                opacity: 1.0,
               },
-              serverType: 'qgis',
-              crossOrigin: 'anonymous',
-            },
-            style: {
-              opacity: 1.0,
-            },
-            zIndex: 3,
-          },
-        },
-        canGetFeatureInfo: true,
-        source: {
-          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
-          params: {
-            'LAYERS': 'GC_UNCO_DEPOSITS',
-          },
-          serverType: 'qgis',
-          crossOrigin: 'anonymous',
-        },
-        style: {
-          opacity: 0.3,
-        },
-        zIndex: 2,
-        attributesConfiguration: {
-          attributeOverrides: {
-            Tecto_lexic: {
-              column: 'Tecto_lexic',
-              type: 'link',
-              labelSourceForLink: 'vocabulary_label',
-            },
-            Chrono_from_lexic: {
-              column: 'Chrono_from_lexic',
-              type: 'link',
-              labelSourceForLink: 'vocabulary_label',
-            },
-            Chrono_to_lexic: {
-              column: 'Chrono_to_lexic',
-              type: 'link',
-              labelSourceForLink: 'vocabulary_label',
+              zIndex: 5,
             },
           },
+          canGetFeatureInfo: true,
+          source: {
+            url: `{{GEOSERVER_BASE_URL}}/wms`,
+            urlWMTS:
+              `{{GEOSERVER_BASE_URL}}/gc_bedrock/gwc/service/wmts?SERVICE=WMTS&VERSION=1.1.1&REQUEST=GetCapabilities`,
+            params: {
+              LAYERS: "gc_bedrock",
+            },
+            paramsWMTS: {
+              layer: "gc_bedrock",
+              style: "swisstopo:gc_bedrock",
+              matrixSet: "EPSG:2056",
+              format: "image/png",
+            },
+            serverType: "geoserver",
+            crossOrigin: "anonymous",
+          },
+          style: {
+            opacity: 0.3,
+          },
+          zIndex: 4,
+          attributesConfiguration: {
+            attributeOverrides: {
+              tecto_lexic: {
+                column: "tecto_lexic",
+                type: "link",
+                labelSourceForLink: "vocabulary_label",
+              },
+              chrono_from_lexic: {
+                column: "chrono_from_lexic",
+                type: "link",
+                labelSourceForLink: "vocabulary_label",
+              },
+              chrono_to_lexic: {
+                column: "chrono_to_lexic",
+                type: "link",
+                labelSourceForLink: "vocabulary_label",
+              },
+              litstrat_lexic: {
+                column: "litstrat_lexic",
+                type: "link",
+                labelSourceForLink: "vocabulary_label",
+              },
+              litho_lexic_1: {
+                column: "litho_lexic_1",
+                type: "link",
+                labelSourceForLink: "vocabulary_label",
+              },
+              litho_lexic_2: {
+                column: "litho_lexic_2",
+                type: "link",
+                labelSourceForLink: "vocabulary_label",
+              },
+              litho_lexic_3: {
+                column: "litho_lexic_3",
+                type: "link",
+                labelSourceForLink: "vocabulary_label",
+              },
+            },
+          },
         },
-      },],
+        {
+          id: "gc_unco_deposits",
+          label: "GC_UNCO_DEPOSITS",
+          isChecked: false,
+          canFilter: true,
+          filters: undefined,
+          filterConfiguration: {
+            layerName: "GC_UNCO_DEPOSITS_filtered",
+            filterChronostratigraphyAge: {
+              columnToFilterOld: "chrono_from_lexic",
+              columnToFilterYon: "chrono_to_lexic",
+              queryYounger_strict: chronoQueries.queryYounger,
+              queryOlder_strict: chronoQueries.queryOlder,
+              queryBetween_strict: chronoQueries.queryBetween,
+            },
+            filterLayer: {
+              id: "GC_UNCO_DEPOSITS_filtered",
+              label: "GC_UNCO_DEPOSITS_filtered",
+              isChecked: false,
+              canFilter: false,
+              canGetFeatureInfo: false,
+              source: {
+                url: `{{GEOSERVER_BASE_URL}}/wms`,
+                params: {
+                  LAYERS: "gc_unco_deposits",
+                  TILED: true,
+                  STYLES: "swisstopo:filtered",
+                  CQL_FILTER: "1=0",
+                },
+                serverType: "geoserver",
+                crossOrigin: "anonymous",
+              },
+              style: {
+                opacity: 1.0,
+              },
+              zIndex: 3,
+            },
+          },
+          canGetFeatureInfo: true,
+          source: {
+            url: `{{GEOSERVER_BASE_URL}}/wms`,
+            urlWMTS: `{{GEOSERVER_BASE_URL}}/gc_unco_deposits/gwc/service/wmts?SERVICE=WMTS&VERSION=1.1.1&REQUEST=GetCapabilities`,
+            params: {
+              LAYERS: "gc_unco_deposits",
+              TILED: true,
+            },
+            paramsWMTS: {
+              layer: "gc_unco_deposits",
+              style: "swisstopo:gc_unco_deposits",
+              matrixSet: "EPSG:2056",
+              format: "image/png",
+            },
+            serverType: "geoserver",
+            crossOrigin: "anonymous",
+          },
+          style: {
+            opacity: 0.3,
+          },
+          zIndex: 2,
+          attributesConfiguration: {
+            attributeOverrides: {
+              Tecto_lexic: {
+                column: "tecto_lexic",
+                type: "link",
+                labelSourceForLink: "vocabulary_label",
+              },
+              Chrono_from_lexic: {
+                column: "chrono_from_lexic",
+                type: "link",
+                labelSourceForLink: "vocabulary_label",
+              },
+              Chrono_to_lexic: {
+                column: "chrono_to_lexic",
+                type: "link",
+                labelSourceForLink: "vocabulary_label",
+              },
+            },
+          },
+        },
+      ],
     },
     {
-      id: 'fgdi',
-      label: 'Federal Geo Data Infrastructure',
+      id: "fgdi",
+      label: "Federal Geo Data Infrastructure",
       isChecked: true,
       canFilter: false,
       canGetFeatureInfo: false,
-      children: [{
-        id: 'geologie-geocover',
-        label: 'geologie-geocover',
-        isChecked: true,
-        canFilter: false,
-        canGetFeatureInfo: false,
-        source: {
-          url: 'https://dev-ogcservices.swissgeol.ch/qgis-server/',
-          params: { 'LAYERS': 'GeoCover-Vektordaten', 'TILED': true },
-          serverType: 'qgis',
-          crossOrigin: 'anonymous',
+      children: [
+        {
+          id: "geologie-geocover",
+          label: "geologie-geocover",
+          isChecked: true,
+          canFilter: false,
+          canGetFeatureInfo: false,
+          source: {
+            url: `{{GEOSERVER_BASE_URL}}/wms`,
+            urlWMTS: `{{GEOSERVER_BASE_URL}}/geocover-vektordaten/gwc/service/wmts?SERVICE=WMTS&VERSION=1.1.1&REQUEST=GetCapabilities`,
+            params:  {
+              LAYERS: "geocover-vektordaten",
+              TILED: true,
+            },
+            paramsWMTS: {
+              layer: "geocover-vektordaten",
+              matrixSet: "EPSG:2056",
+              format: "image/png",
+            },
+            serverType: "geoserver",
+            crossOrigin: "anonymous",
+          },
+          style: {
+            opacity: 0.3,
+          },
+          zIndex: 1,
         },
-        style: {
-          opacity: 0.3,
-        },
-        zIndex: 1,
-      }],
+      ],
     },
     {
-      id: 'osm',
-      label: 'OpenStreetMap (OSM)',
+      id: "osm",
+      label: "OpenStreetMap (OSM)",
       isChecked: false,
       canFilter: false,
       isIndeterminate: false,
@@ -576,19 +630,19 @@ const initialState: LayerState = {
         opacity: 0.3,
       },
       zIndex: 0,
-    }
+    },
   ],
   iconFilterLayers: undefined,
 };
 
 export const layerMenuSlice = createSlice({
-  name: 'layersMenuSlice',
+  name: "layersMenuSlice",
   initialState,
   reducers: {
     /**
      *  Manages and updates the state of checked layers by cycling on both parent and child layers.
-     * 
-     * @param state state of layer 
+     *
+     * @param state state of layer
      * @param action payloadAction is the data passed by the component
      */
     toggleCheck: (state, action: PayloadAction<string>) => {
@@ -597,20 +651,30 @@ export const layerMenuSlice = createSlice({
       const updateIndeterminateStatus = (layer: Layer): Layer => {
         if (!layer.children) return layer;
         const totalChildren = layer.children.length;
-        const checkedChildren = layer.children.filter(child => child.isChecked).length;
-        layer.isIndeterminate = checkedChildren > 0 && checkedChildren < totalChildren;
+        const checkedChildren = layer.children.filter(
+          (child) => child.isChecked
+        ).length;
+        layer.isIndeterminate =
+          checkedChildren > 0 && checkedChildren < totalChildren;
         layer.children = layer.children.map(updateIndeterminateStatus);
         return layer;
       };
 
       const updateFilterLayer = (layer: Layer, isChecked: boolean): Layer => {
-        if (layer.canFilter && layer.filterConfiguration && layer.filterConfiguration.filterLayer) {
+        if (
+          layer.canFilter &&
+          layer.filterConfiguration &&
+          layer.filterConfiguration.filterLayer
+        ) {
           layer.filterConfiguration.filterLayer.isChecked = isChecked;
         }
         return layer;
       };
 
-      const toggleLayerAndChildren = (layer: Layer, targetId: string): Layer => {
+      const toggleLayerAndChildren = (
+        layer: Layer,
+        targetId: string
+      ): Layer => {
         if (layer.id === targetId) {
           const newIsChecked = !layer.isChecked;
           let updatedLayer = updateFilterLayer(layer, newIsChecked);
@@ -621,36 +685,41 @@ export const layerMenuSlice = createSlice({
             return {
               ...updatedLayer,
               isChecked: newIsChecked,
-              children: updatedLayer.children.map(child => {
+              children: updatedLayer.children.map((child) => {
                 const updatedChild = { ...child, isChecked: newIsChecked };
                 return updateFilterLayer(updatedChild, newIsChecked);
-              })
+              }),
             };
           }
         }
 
         if (layer.children) {
-          const updatedChildren = layer.children.map(child => toggleLayerAndChildren(child, targetId));
-          const atLeastOneChildChecked = updatedChildren.some(child => child.isChecked);
+          const updatedChildren = layer.children.map((child) =>
+            toggleLayerAndChildren(child, targetId)
+          );
+          const atLeastOneChildChecked = updatedChildren.some(
+            (child) => child.isChecked
+          );
 
           return {
             ...layer,
             isChecked: atLeastOneChildChecked,
-            children: updatedChildren
+            children: updatedChildren,
           };
         }
 
         return layer;
       };
 
-      state.layers = state.layers.map(layer => toggleLayerAndChildren(layer, action.payload))
+      state.layers = state.layers
+        .map((layer) => toggleLayerAndChildren(layer, action.payload))
         .map(updateIndeterminateStatus);
     },
     /**
      * Changes the status that allows the filter icon to update appropriately if there are active filters on a given layer.
-     * 
-     * @param state state of layer 
-     * @param action payloadAction is the data passed by the component 
+     *
+     * @param state state of layer
+     * @param action payloadAction is the data passed by the component
      */
     toggleFilter: (state, action: PayloadAction<string | undefined>) => {
       state.iconFilterLayers = action.payload;
@@ -658,14 +727,28 @@ export const layerMenuSlice = createSlice({
 
     /**
      * ASllows a filter to be added to a given layer found by id
-     * 
-     * @param state state of layer 
-     * @param action payloadAction is the data passed by the component 
+     *
+     * @param state state of layer
+     * @param action payloadAction is the data passed by the component
      * @returns the updated state
      */
-    addFilter: (state, action: PayloadAction<{ layerId: string, filter: Filter, filterType: FiltersType }>) => {
+    addFilter: (
+      state,
+      action: PayloadAction<{
+        layerId: string;
+        filter: Filter;
+        filterType: FiltersType;
+      }>
+    ) => {
       const { layerId, filter, filterType } = action.payload;
-      console.log('Add filter on layer with ID:', layerId, 'Filter details:', filter, 'Filter type:', filterType);
+      console.log(
+        "Add filter on layer with ID:",
+        layerId,
+        "Filter details:",
+        filter,
+        "Filter type:",
+        filterType
+      );
 
       const layer = findLayerById(state.layers, layerId);
 
@@ -675,114 +758,180 @@ export const layerMenuSlice = createSlice({
         }
 
         switch (filterType) {
-          case 'filterByAttribute':
+          case "filterByAttribute":
             if (!layer.filters.filterByAttribute) {
               layer.filters.filterByAttribute = [];
             }
             if (filter.filterByAttribute) {
-              const filterByAttributeArray = filter.filterByAttribute as FilterByAttribute[];
-              const existingFilterIndex = layer.filters.filterByAttribute.findIndex(f => f.key === filterByAttributeArray[0]?.key);
+              const filterByAttributeArray =
+                filter.filterByAttribute as FilterByAttribute[];
+              const existingFilterIndex =
+                layer.filters.filterByAttribute.findIndex(
+                  (f) => f.key === filterByAttributeArray[0]?.key
+                );
 
               if (existingFilterIndex !== -1) {
-                layer.filters.filterByAttribute[existingFilterIndex].value = filter.filterByAttribute[0]?.value;
-                console.log('Filter Update:', filter.filterByAttribute, ', Layer id:', layerId);
+                layer.filters.filterByAttribute[existingFilterIndex].value =
+                  filter.filterByAttribute[0]?.value;
+                console.log(
+                  "Filter Update:",
+                  filter.filterByAttribute,
+                  ", Layer id:",
+                  layerId
+                );
               } else {
-                layer.filters.filterByAttribute.push(...filter.filterByAttribute);
-                console.log('Add Filter:', filter.filterByAttribute, ', on layer id: ', layerId);
+                layer.filters.filterByAttribute.push(
+                  ...filter.filterByAttribute
+                );
+                console.log(
+                  "Add Filter:",
+                  filter.filterByAttribute,
+                  ", on layer id: ",
+                  layerId
+                );
               }
             }
             break;
-          case 'filterByTectoUnitsTerm':
-            console.log('Aggiungendo filterByTectoUnitsTerm al layer:', filter);
+          case "filterByTectoUnitsTerm":
+            console.log("Aggiungendo filterByTectoUnitsTerm al layer:", filter);
             if (!layer.filters.filterByTectoUnitsTerm) {
               layer.filters.filterByTectoUnitsTerm = [];
             }
             if (filter.filterByTectoUnitsTerm) {
-              const filterByTectoUnitsTermArray = filter.filterByTectoUnitsTerm as FilterByTectoUnitsTermItem[];
-              const existingFilterIndex = layer.filters.filterByTectoUnitsTerm.findIndex(f => f.term === filterByTectoUnitsTermArray[0]?.term);
+              const filterByTectoUnitsTermArray =
+                filter.filterByTectoUnitsTerm as FilterByTectoUnitsTermItem[];
+              const existingFilterIndex =
+                layer.filters.filterByTectoUnitsTerm.findIndex(
+                  (f) => f.term === filterByTectoUnitsTermArray[0]?.term
+                );
 
               if (existingFilterIndex !== -1) {
-                layer.filters.filterByTectoUnitsTerm[existingFilterIndex] = filterByTectoUnitsTermArray[0];
-                console.log('Filtro aggiornato:', filter.filterByTectoUnitsTerm);
+                layer.filters.filterByTectoUnitsTerm[existingFilterIndex] =
+                  filterByTectoUnitsTermArray[0];
+                console.log(
+                  "Filtro aggiornato:",
+                  filter.filterByTectoUnitsTerm
+                );
               } else {
-                layer.filters.filterByTectoUnitsTerm.push(...filterByTectoUnitsTermArray);
-                console.log('Filtro aggiunto:', filter.filterByTectoUnitsTerm);
+                layer.filters.filterByTectoUnitsTerm.push(
+                  ...filterByTectoUnitsTermArray
+                );
+                console.log("Filtro aggiunto:", filter.filterByTectoUnitsTerm);
               }
             }
             break;
-          case 'filterByChronostratigraphy':
-            console.log('Aggiungendo filterByChronostratigraphy al layer:', filter);
+          case "filterByChronostratigraphy":
+            console.log(
+              "Aggiungendo filterByChronostratigraphy al layer:",
+              filter
+            );
             if (!layer.filters.filterChronostratigraphyAge) {
               layer.filters.filterChronostratigraphyAge = [];
             }
 
             if (filter.filterChronostratigraphyAge) {
-              const filterChronostratigraphyAgeArray = filter.filterChronostratigraphyAge as FilterChronostratigraphyAgeItem[];
-              const existingFilterIndex = layer.filters.filterChronostratigraphyAge.findIndex(f =>
-                f.idYounger === filterChronostratigraphyAgeArray[0]?.idYounger &&
-                f.idOlder === filterChronostratigraphyAgeArray[0]?.idOlder
-              );
+              const filterChronostratigraphyAgeArray =
+                filter.filterChronostratigraphyAge as FilterChronostratigraphyAgeItem[];
+              const existingFilterIndex =
+                layer.filters.filterChronostratigraphyAge.findIndex(
+                  (f) =>
+                    f.idYounger ===
+                      filterChronostratigraphyAgeArray[0]?.idYounger &&
+                    f.idOlder === filterChronostratigraphyAgeArray[0]?.idOlder
+                );
 
               if (existingFilterIndex !== -1) {
-                layer.filters.filterChronostratigraphyAge[existingFilterIndex] = filterChronostratigraphyAgeArray[0];
-                console.log('Filtro aggiornato:', filter.filterChronostratigraphyAge);
+                layer.filters.filterChronostratigraphyAge[existingFilterIndex] =
+                  filterChronostratigraphyAgeArray[0];
+                console.log(
+                  "Filtro aggiornato:",
+                  filter.filterChronostratigraphyAge
+                );
               } else {
-                layer.filters.filterChronostratigraphyAge.push(...filterChronostratigraphyAgeArray);
-                console.log('Filtro aggiunto:', filter.filterChronostratigraphyAge);
+                layer.filters.filterChronostratigraphyAge.push(
+                  ...filterChronostratigraphyAgeArray
+                );
+                console.log(
+                  "Filtro aggiunto:",
+                  filter.filterChronostratigraphyAge
+                );
               }
             }
             break;
-          case 'filterByLithostratigraphyTerm':
-            console.log('Aggiungendo filterByLithostratigraphyTerm al layer:', filter);
+          case "filterByLithostratigraphyTerm":
+            console.log(
+              "Aggiungendo filterByLithostratigraphyTerm al layer:",
+              filter
+            );
             if (!layer.filters.filterByLithostratigraphyTerm) {
               layer.filters.filterByLithostratigraphyTerm = [];
             }
             if (filter.filterByLithostratigraphyTerm) {
-              const filterByLithostratigraphyTermArray = filter.filterByLithostratigraphyTerm as FilterByLithostratigraphyTermItem[];
-              const existingFilterIndex = layer.filters.filterByLithostratigraphyTerm.findIndex(f => f.term === filterByLithostratigraphyTermArray[0]?.term);
+              const filterByLithostratigraphyTermArray =
+                filter.filterByLithostratigraphyTerm as FilterByLithostratigraphyTermItem[];
+              const existingFilterIndex =
+                layer.filters.filterByLithostratigraphyTerm.findIndex(
+                  (f) => f.term === filterByLithostratigraphyTermArray[0]?.term
+                );
 
               if (existingFilterIndex !== -1) {
-                layer.filters.filterByLithostratigraphyTerm[existingFilterIndex] = filterByLithostratigraphyTermArray[0];
-                console.log('Filtro aggiornato:', filter.filterByLithostratigraphyTerm);
+                layer.filters.filterByLithostratigraphyTerm[
+                  existingFilterIndex
+                ] = filterByLithostratigraphyTermArray[0];
+                console.log(
+                  "Filtro aggiornato:",
+                  filter.filterByLithostratigraphyTerm
+                );
               } else {
-                layer.filters.filterByLithostratigraphyTerm.push(...filterByLithostratigraphyTermArray);
-                console.log('Filtro aggiunto:', filter.filterByLithostratigraphyTerm);
+                layer.filters.filterByLithostratigraphyTerm.push(
+                  ...filterByLithostratigraphyTermArray
+                );
+                console.log(
+                  "Filtro aggiunto:",
+                  filter.filterByLithostratigraphyTerm
+                );
               }
             }
             break;
-            case 'filterByLithologyTerm':
-              console.log('Aggiungendo filterByLithologyTerm al layer:', filter);
-              if (!layer.filters.filterByLithologyTerm) {
-                layer.filters.filterByLithologyTerm = [];
+          case "filterByLithologyTerm":
+            console.log("Aggiungendo filterByLithologyTerm al layer:", filter);
+            if (!layer.filters.filterByLithologyTerm) {
+              layer.filters.filterByLithologyTerm = [];
+            }
+            if (filter.filterByLithologyTerm) {
+              const filterByLithologyTermArray =
+                filter.filterByLithologyTerm as FilterByLithologyTermItem[];
+              const existingFilterIndex =
+                layer.filters.filterByLithologyTerm.findIndex(
+                  (f) => f.term === filterByLithologyTermArray[0]?.term
+                );
+
+              if (existingFilterIndex !== -1) {
+                layer.filters.filterByLithologyTerm[existingFilterIndex] =
+                  filterByLithologyTermArray[0];
+                console.log("Filtro aggiornato:", filter.filterByLithologyTerm);
+              } else {
+                layer.filters.filterByLithologyTerm.push(
+                  ...filterByLithologyTermArray
+                );
+                console.log("Filtro aggiunto:", filter.filterByLithologyTerm);
               }
-              if (filter.filterByLithologyTerm) {
-                const filterByLithologyTermArray = filter.filterByLithologyTerm as FilterByLithologyTermItem[];
-                const existingFilterIndex = layer.filters.filterByLithologyTerm.findIndex(f => f.term === filterByLithologyTermArray[0]?.term);
-  
-                if (existingFilterIndex !== -1) {
-                  layer.filters.filterByLithologyTerm[existingFilterIndex] = filterByLithologyTermArray[0];
-                  console.log('Filtro aggiornato:', filter.filterByLithologyTerm);
-                } else {
-                  layer.filters.filterByLithologyTerm.push(...filterByLithologyTermArray);
-                  console.log('Filtro aggiunto:', filter.filterByLithologyTerm);
-                }
-              }
-              break;  
+            }
+            break;
           default:
             break;
         }
-
       } else {
-        console.error('Layer not found or filter is incorrect.');
+        console.error("Layer not found or filter is incorrect.");
       }
       return state;
     },
 
     /**
      * Allows a filter to be removed from a given layer by id
-     * 
-     * @param state state of layer 
-     * @param action payloadAction is the data passed by the component 
+     *
+     * @param state state of layer
+     * @param action payloadAction is the data passed by the component
      */
     removeFilter: (
       state,
@@ -795,44 +944,71 @@ export const layerMenuSlice = createSlice({
         type?: string;
       }>
     ) => {
-      const { layerId, filterKey, idYounger, idOlder, filterType, type } = action.payload;
+      const { layerId, filterKey, idYounger, idOlder, filterType, type } =
+        action.payload;
       const layerToUpdate = findLayerById(state.layers, layerId);
 
       if (layerToUpdate && layerToUpdate.filters) {
         if (filterType === FiltersType.FilterByChronostratigraphy) {
           if (layerToUpdate.filters.filterChronostratigraphyAge) {
-            layerToUpdate.filters.filterChronostratigraphyAge = layerToUpdate.filters.filterChronostratigraphyAge.filter(attr =>
-              (type === FilterOptionChronostratigraphy.Older && attr.type === FilterOptionChronostratigraphy.Older && attr.idOlder === idOlder) ||
-                (type === FilterOptionChronostratigraphy.Younger && attr.type === FilterOptionChronostratigraphy.Younger && attr.idYounger === idYounger) ||
-                (type === FilterOptionChronostratigraphy.Between && attr.type === FilterOptionChronostratigraphy.Between && attr.idOlder === idOlder && attr.idYounger === idYounger) ? false : true
-            );
+            layerToUpdate.filters.filterChronostratigraphyAge =
+              layerToUpdate.filters.filterChronostratigraphyAge.filter(
+                (attr) =>
+                  (type === FilterOptionChronostratigraphy.Older &&
+                    attr.type === FilterOptionChronostratigraphy.Older &&
+                    attr.idOlder === idOlder) ||
+                  (type === FilterOptionChronostratigraphy.Younger &&
+                    attr.type === FilterOptionChronostratigraphy.Younger &&
+                    attr.idYounger === idYounger) ||
+                  (type === FilterOptionChronostratigraphy.Between &&
+                    attr.type === FilterOptionChronostratigraphy.Between &&
+                    attr.idOlder === idOlder &&
+                    attr.idYounger === idYounger)
+                    ? false
+                    : true
+              );
           }
         } else if (filterType === FiltersType.FilterByAttribute) {
           if (layerToUpdate.filters.filterByAttribute) {
-            layerToUpdate.filters.filterByAttribute = layerToUpdate.filters.filterByAttribute.filter(attr => attr.key !== filterKey);
+            layerToUpdate.filters.filterByAttribute =
+              layerToUpdate.filters.filterByAttribute.filter(
+                (attr) => attr.key !== filterKey
+              );
           }
         } else if (filterType === FiltersType.FilterByTectoUnitsTerm) {
           if (layerToUpdate.filters.filterByTectoUnitsTerm) {
-            layerToUpdate.filters.filterByTectoUnitsTerm = layerToUpdate.filters.filterByTectoUnitsTerm.filter(term => term.term !== filterKey);
+            layerToUpdate.filters.filterByTectoUnitsTerm =
+              layerToUpdate.filters.filterByTectoUnitsTerm.filter(
+                (term) => term.term !== filterKey
+              );
           }
         } else if (filterType === FiltersType.FilterByLithostratigraphyTerm) {
           if (layerToUpdate.filters.filterByLithostratigraphyTerm) {
-            layerToUpdate.filters.filterByLithostratigraphyTerm = layerToUpdate.filters.filterByLithostratigraphyTerm.filter(term => term.term !== filterKey);
+            layerToUpdate.filters.filterByLithostratigraphyTerm =
+              layerToUpdate.filters.filterByLithostratigraphyTerm.filter(
+                (term) => term.term !== filterKey
+              );
           }
         } else if (filterType === FiltersType.FilterByLithologyTerm) {
           if (layerToUpdate.filters.filterByLithologyTerm) {
-            layerToUpdate.filters.filterByLithologyTerm = layerToUpdate.filters.filterByLithologyTerm.filter(term => term.term !== filterKey);
+            layerToUpdate.filters.filterByLithologyTerm =
+              layerToUpdate.filters.filterByLithologyTerm.filter(
+                (term) => term.term !== filterKey
+              );
           }
         }
       }
     },
     /**
      * Updates with values passed by the component the opacity value of a given layer found by id
-     * 
-     * @param state state of layer 
-     * @param action payloadAction is the data passed by the component 
+     *
+     * @param state state of layer
+     * @param action payloadAction is the data passed by the component
      */
-    updateOpacity(state, action: PayloadAction<{ layerId: string; opacity: number }>) {
+    updateOpacity(
+      state,
+      action: PayloadAction<{ layerId: string; opacity: number }>
+    ) {
       const { layerId, opacity } = action.payload;
 
       const updateOpacityRecursive = (layers: Layer[]): void => {
@@ -843,7 +1019,10 @@ export const layerMenuSlice = createSlice({
             }
             return;
           }
-          if (layer.filterConfiguration?.filterLayer && layer.filterConfiguration.filterLayer.id === layerId) {
+          if (
+            layer.filterConfiguration?.filterLayer &&
+            layer.filterConfiguration.filterLayer.id === layerId
+          ) {
             if (layer.filterConfiguration.filterLayer.style) {
               layer.filterConfiguration.filterLayer.style.opacity = opacity;
             }
@@ -858,13 +1037,13 @@ export const layerMenuSlice = createSlice({
     },
     /**
      * Action to update the attributes configuration for a specific layer
-     * 
-     * This action updates the `attributesConfiguration` of a layer in the Redux store state. 
-     * It first retrieves the layer using `findLayerById` based on the provided `layerId`. 
+     *
+     * This action updates the `attributesConfiguration` of a layer in the Redux store state.
+     * It first retrieves the layer using `findLayerById` based on the provided `layerId`.
      * If the layer is found, it initializes the `attributesConfiguration` object if it doesn't already exist,
      * and updates its `attributes` property with the new array of attributes provided in the action payload.
      * If the layer is not found, an error message is logged to the console.
-     * 
+     *
      */
     setAttributesConfiguration: (
       state,
@@ -875,17 +1054,81 @@ export const layerMenuSlice = createSlice({
 
       if (layer) {
         if (!layer.attributesConfiguration) {
-          layer.attributesConfiguration = { attributes: [], attributeOverrides: {} };
+          layer.attributesConfiguration = {
+            attributes: [],
+            attributeOverrides: {},
+          };
         }
 
         layer.attributesConfiguration.attributes = attributes;
       } else {
-        console.error('Layer non trovato');
+        console.error("Layer non trovato: " + layerId);
       }
+      
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchConfig.fulfilled, (state, action) => {
+      const { geoserverBaseUrl, vocabularyPrefixUrl } = action.payload;
+      const geoserverPlaceholder = /\{\{GEOSERVER_BASE_URL\}\}/g;
+      const prefixPlaceholder = /\$\{prefix\}/g;
+
+      const newLayers = JSON.parse(JSON.stringify(state.layers));
+
+      const updateConfigs = (layers: Layer[]) => {
+        layers.forEach(layer => {
+          if (layer.source) {
+            if (layer.source.url) {
+              layer.source.url = layer.source.url.replace(geoserverPlaceholder, geoserverBaseUrl);
+            }
+            if (layer.source.urlWMTS) {
+              layer.source.urlWMTS = layer.source.urlWMTS.replace(geoserverPlaceholder, geoserverBaseUrl);
+            }
+          }
+
+          if (layer.filterConfiguration) {
+            if (layer.filterConfiguration.filterConfigurationByTectoUnitsTerm) {
+              layer.filterConfiguration.filterConfigurationByTectoUnitsTerm.queryNarrower = layer.filterConfiguration.filterConfigurationByTectoUnitsTerm.queryNarrower.replace(prefixPlaceholder, vocabularyPrefixUrl);
+            }
+            if (layer.filterConfiguration.filterConfigurationByLithostratigraphyTerm) {
+              layer.filterConfiguration.filterConfigurationByLithostratigraphyTerm.queryNarrower = layer.filterConfiguration.filterConfigurationByLithostratigraphyTerm.queryNarrower.replace(prefixPlaceholder, vocabularyPrefixUrl);
+            }
+            if (layer.filterConfiguration.filterConfigurationByLithologyTerm) {
+              layer.filterConfiguration.filterConfigurationByLithologyTerm.queryNarrower = layer.filterConfiguration.filterConfigurationByLithologyTerm.queryNarrower.replace(prefixPlaceholder, vocabularyPrefixUrl);
+            }
+            if (layer.filterConfiguration.filterChronostratigraphyAge) {
+              layer.filterConfiguration.filterChronostratigraphyAge.queryYounger_strict = layer.filterConfiguration.filterChronostratigraphyAge.queryYounger_strict.replace(prefixPlaceholder, vocabularyPrefixUrl);
+              layer.filterConfiguration.filterChronostratigraphyAge.queryOlder_strict = layer.filterConfiguration.filterChronostratigraphyAge.queryOlder_strict.replace(prefixPlaceholder, vocabularyPrefixUrl);
+              layer.filterConfiguration.filterChronostratigraphyAge.queryBetween_strict = layer.filterConfiguration.filterChronostratigraphyAge.queryBetween_strict.replace(prefixPlaceholder, vocabularyPrefixUrl);
+            }
+            if (layer.filterConfiguration.filterLayer && layer.filterConfiguration.filterLayer.source) {
+              if (layer.filterConfiguration.filterLayer.source.url) {
+                layer.filterConfiguration.filterLayer.source.url = layer.filterConfiguration.filterLayer.source.url.replace(geoserverPlaceholder, geoserverBaseUrl);
+              }
+              if (layer.filterConfiguration.filterLayer.source.urlWMTS) {
+                layer.filterConfiguration.filterLayer.source.urlWMTS = layer.filterConfiguration.filterLayer.source.urlWMTS.replace(geoserverPlaceholder, geoserverBaseUrl);
+              }
+            }
+          }
+
+          if (layer.children) {
+            updateConfigs(layer.children);
+          }
+        });
+      };
+      updateConfigs(newLayers);
+      state.layers = newLayers;
+    });
   }
 });
 
-export const { toggleCheck, addFilter, removeFilter, toggleFilter, updateOpacity, setAttributesConfiguration } = layerMenuSlice.actions;
+export const {
+  toggleCheck,
+  addFilter,
+  removeFilter,
+  toggleFilter,
+  updateOpacity,
+  setAttributesConfiguration,
+} = layerMenuSlice.actions;
 
 export default layerMenuSlice.reducer;

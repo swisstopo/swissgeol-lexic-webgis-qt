@@ -154,7 +154,7 @@ export const createQueryString = (layer: Layer): string => {
         console.log('Layer filters:', layer.filters);
         console.log('Chrono terms:', chronostratigraphyTermsList);
         console.log('Conditions:', conditions);
-        queryString = conditions.length > 0 ? `${layerId}:${conditions.join(' AND ')}` : '';
+        queryString = conditions.length > 0 ? /*${layerId}:*/`${conditions.join(' AND ')}` : '';
     }
 
 

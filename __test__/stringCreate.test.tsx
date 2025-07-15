@@ -51,7 +51,7 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\'');
+        expect(queryString).toBe('"Origin_EN" = \'European continental platform\'');
     });
 
     /**
@@ -82,7 +82,7 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Litho_EN" = \'Molasse (Cenozoic)\' AND "Shape_Area" = \'159457153.91848147\'');
+        expect(queryString).toBe('"Origin_EN" = \'European continental platform\' AND "Litho_EN" = \'Molasse (Cenozoic)\' AND "Shape_Area" = \'159457153.91848147\'');
     });
 
     /**
@@ -111,7 +111,7 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' )');
+        expect(queryString).toBe('"Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' )');
     });
 
     /**
@@ -147,7 +147,7 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/SilberenSlices\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/MonteRosaNappe\' )');
+        expect(queryString).toBe('"Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/SilberenSlices\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/MonteRosaNappe\' )');
     });
 
     /**
@@ -179,7 +179,7 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' )');
+        expect(queryString).toBe('"Origin_EN" = \'European continental platform\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' )');
     });
 
     /**
@@ -217,7 +217,7 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/HauteSaonePlatform\' )');
+        expect(queryString).toBe('"Origin_EN" = \'European continental platform\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/HauteSaonePlatform\' )');
     });
 
     /**
@@ -251,7 +251,7 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Litho_EN" = \'Molasse (Cenozoic)\' AND "Shape_Area" = \'159457153.91848147\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' )');
+        expect(queryString).toBe('"Origin_EN" = \'European continental platform\' AND "Litho_EN" = \'Molasse (Cenozoic)\' AND "Shape_Area" = \'159457153.91848147\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' )');
     });
 
     /**
@@ -290,7 +290,7 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Shape_Area" = \'3222452787.5111227\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/SouthGermanPlatform\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/SouthGermanPlatform\' )');
+        expect(queryString).toBe('"Origin_EN" = \'European continental platform\' AND "Shape_Area" = \'3222452787.5111227\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/SouthGermanPlatform\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/SouthGermanPlatform\' )');
     });
 
     /**
@@ -326,7 +326,7 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:( "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/SilberenSlices\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/MonteRosaNappe\' ) OR "tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/SilberenSlices\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/MonteRosaNappe\' ) )');
+        expect(queryString).toBe('( "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/SilberenSlices\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/MonteRosaNappe\' ) OR "tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/SilberenSlices\' , \'https://dev-lexic.swissgeol.ch/TectonicUnits/MonteRosaNappe\' ) )');
     });
 
     /**
@@ -365,7 +365,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('Tecto_Units_augm_filtered:"Chrono_from_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' , \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Triassic\' )');
+            expect(queryString).toBe('"Chrono_from_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' , \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Triassic\' )');
         });
 
         /**
@@ -399,7 +399,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('Tecto_Units_augm_filtered:"Chrono_to_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Quaternary\' , \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Neogene\' )');
+            expect(queryString).toBe('"Chrono_to_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Quaternary\' , \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Neogene\' )');
         });
 
         /**
@@ -434,7 +434,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('Tecto_Units_augm_filtered:( "Chrono_from_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' , \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Cretaceous\' ) AND "Chrono_to_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' , \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Cretaceous\' ) )');
+            expect(queryString).toBe('( "Chrono_from_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' , \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Cretaceous\' ) AND "Chrono_to_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' , \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Cretaceous\' ) )');
         });
 
         /**
@@ -468,7 +468,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('Tecto_Units_augm_filtered:"Chrono_from_lexic" IN ( \'empty\' )');
+            expect(queryString).toBe('"Chrono_from_lexic" IN ( \'empty\' )');
         });
 
         /**
@@ -502,7 +502,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('Tecto_Units_augm_filtered:"Chrono_to_lexic" IN ( \'empty\' )');
+            expect(queryString).toBe('"Chrono_to_lexic" IN ( \'empty\' )');
         });
 
         /**
@@ -537,7 +537,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('Tecto_Units_augm_filtered:( "Chrono_from_lexic" IN ( \'empty\' ) AND "Chrono_to_lexic" IN ( \'empty\' ) )');
+            expect(queryString).toBe('( "Chrono_from_lexic" IN ( \'empty\' ) AND "Chrono_to_lexic" IN ( \'empty\' ) )');
         });
     });
 
@@ -575,7 +575,7 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Chrono_from_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' )');
+        expect(queryString).toBe('"Origin_EN" = \'European continental platform\' AND "Chrono_from_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' )');
     });
 
     /**
@@ -623,7 +623,7 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' ) AND "Chrono_from_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' )');
+        expect(queryString).toBe('"Origin_EN" = \'European continental platform\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' ) AND "Chrono_from_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' )');
     });
 
     /**
@@ -661,7 +661,7 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:( "Chrono_from_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' ) AND "Chrono_to_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Cretaceous\' ) )');
+        expect(queryString).toBe('( "Chrono_from_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' ) AND "Chrono_to_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Cretaceous\' ) )');
     });
 
     /**
@@ -695,7 +695,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('GC_BEDROCK_filtered:"Litstrat_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' )');
+            expect(queryString).toBe('"Litstrat_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' )');
         });
 
         /**
@@ -731,7 +731,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('GC_BEDROCK_filtered:"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperFreshwaterMolasse\' )');
+            expect(queryString).toBe('"Litstrat_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperFreshwaterMolasse\' )');
         });
 
         /**
@@ -767,7 +767,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('GC_BEDROCK_filtered:( "Litstrat_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' ) OR "litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' ) )');
+            expect(queryString).toBe('( "Litstrat_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' ) OR "litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' ) )');
         });
 
         /**
@@ -804,10 +804,13 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('GC_BEDROCK_filtered:"Litstrat_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/LowerFreshwaterMolasse\' )');
+            expect(queryString).toBe('"Litstrat_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/LowerFreshwaterMolasse\' )');
         });
     });
 
+    /**
+     * Tests for lithology filters
+     */
     describe('FilterByLithologyTerm', () => {
         /**
          * Tests filtering by a lithology term without narrowers
@@ -835,22 +838,22 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('GC_BEDROCK_filtered:"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' )');
+            expect(queryString).toBe('"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithology/MolasseGroup\' )');
         });
 
         /**
-         * Tests filtering by a lithostratigraphic term with narrowers (subordinate rock units)
+         * Tests filtering by a lithology term with narrowers
          */
         it('FilterByLithologyTerm with 1 Value with narrower', () => {
             const layer: Layer = {
                 id: 'GC_BEDROCK_filtered',
                 filters: {
-                    filterByLithostratigraphyTerm: [
+                    filterByLithologyTerm: [
                         {
-                            term: 'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup',
+                            term: 'https://dev-lexic.swissgeol.ch/Lithology/MolasseGroup',
                             narrowers: [
-                                'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse',
-                                'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperFreshwaterMolasse'
+                                'https://dev-lexic.swissgeol.ch/Lithology/UpperMarineMolasse',
+                                'https://dev-lexic.swissgeol.ch/Lithology/UpperFreshwaterMolasse'
                             ],
                             includeNarrowers: true
                         }
@@ -858,8 +861,8 @@ describe('String Create Query', () => {
                 },
                 filterConfiguration: {
                     layerName: 'GC_BEDROCK_filtered',
-                    filterConfigurationByLithostratigraphyTerm: {
-                        idVocabulary: 'Lithostratigraphy',
+                    filterConfigurationByLithologyTerm: {
+                        idVocabulary: 'Lithology',
                         queryNarrower: '',
                         attributeToFilter: ['Litho_lexic']
                     },
@@ -871,22 +874,21 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('GC_BEDROCK_filtered:"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperFreshwaterMolasse\' )');
+            expect(queryString).toBe('"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithology/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithology/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithology/UpperFreshwaterMolasse\' )');
         });
 
         /**
-         * Tests filtering by a lithostratigraphic term with multiple columns
-         * This allows searching for the term in different attribute columns
+         * Tests filtering by a lithology term with multiple columns
          */
         it('FilterByLithologyTerm with multiple columns', () => {
             const layer: Layer = {
                 id: 'GC_BEDROCK_filtered',
                 filters: {
-                    filterByLithostratigraphyTerm: [
+                    filterByLithologyTerm: [
                         {
-                            term: 'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup',
+                            term: 'https://dev-lexic.swissgeol.ch/Lithology/MolasseGroup',
                             narrowers: [
-                                'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse'
+                                'https://dev-lexic.swissgeol.ch/Lithology/UpperMarineMolasse'
                             ],
                             includeNarrowers: true
                         }
@@ -894,8 +896,8 @@ describe('String Create Query', () => {
                 },
                 filterConfiguration: {
                     layerName: 'GC_BEDROCK_filtered',
-                    filterConfigurationByLithostratigraphyTerm: {
-                        idVocabulary: 'Lithlogy',
+                    filterConfigurationByLithologyTerm: {
+                        idVocabulary: 'Lithology',
                         queryNarrower: '',
                         attributeToFilter: ['Litho_lexic', 'litho_lexic']
                     },
@@ -907,24 +909,23 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('GC_BEDROCK_filtered:( "Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' ) OR "litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' ) )');
+            expect(queryString).toBe('( "Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithology/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithology/UpperMarineMolasse\' ) OR "litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithology/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithology/UpperMarineMolasse\' ) )');
         });
 
         /**
-         * Tests filtering by a lithostratigraphic term with explicit queryNarrower definition
-         * This allows retrieving subordinate units using a SPARQL query
+         * Tests filtering by a lithology term with explicit queryNarrower definition
          */
         it('FilterByLithologyTerm with explicit queryNarrower', () => {
             const layer: Layer = {
                 id: 'GC_BEDROCK_filtered',
                 filters: {
-                    filterByLithostratigraphyTerm: [
+                    filterByLithologyTerm: [
                         {
-                            term: 'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup',
+                            term: 'https://dev-lexic.swissgeol.ch/Lithology/MolasseGroup',
                             includeNarrowers: true,
                             narrowers: [
-                                'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse',
-                                'https://dev-lexic.swissgeol.ch/Lithostratigraphy/LowerFreshwaterMolasse'
+                                'https://dev-lexic.swissgeol.ch/Lithology/UpperMarineMolasse',
+                                'https://dev-lexic.swissgeol.ch/Lithology/LowerFreshwaterMolasse'
                             ]
                         }
                     ]
@@ -932,9 +933,9 @@ describe('String Create Query', () => {
                 label: 'layer',
                 filterConfiguration: {
                     layerName: 'GC_BEDROCK_filtered',
-                    filterConfigurationByLithostratigraphyTerm: {
+                    filterConfigurationByLithologyTerm: {
                         idVocabulary: 'Lithology',
-                        queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://dev-lexic.swissgeol.ch/Lithostratigraphy/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
+                        queryNarrower: 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <https://dev-lexic.swissgeol.ch/Lithology/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}',
                         attributeToFilter: ['Litho_lexic']
                     },
                 },
@@ -944,7 +945,7 @@ describe('String Create Query', () => {
             };
 
             const queryString = createQueryString(layer);
-            expect(queryString).toBe('GC_BEDROCK_filtered:"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/LowerFreshwaterMolasse\' )');
+            expect(queryString).toBe('"Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithology/MolasseGroup\' , \'https://dev-lexic.swissgeol.ch/Lithology/UpperMarineMolasse\' , \'https://dev-lexic.swissgeol.ch/Lithology/LowerFreshwaterMolasse\' )');
         });
     });
 
@@ -980,12 +981,11 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' )');
+        expect(queryString).toBe('"Origin_EN" = \'European continental platform\' AND "Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' )');
     });
 
     /**
      * Tests combination of all filter types including lithostratigraphy
-     * This is the most complex test case combining all possible filter types
      */
     it('Combination of all filter types including Lithostratigraphy', () => {
         const layer: Layer = {
@@ -1040,7 +1040,7 @@ describe('String Create Query', () => {
         };
 
         const queryString = createQueryString(layer);
-        expect(queryString).toBe('Tecto_Units_augm_filtered:"Origin_EN" = \'European continental platform\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' ) AND "Chrono_from_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' ) AND "Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' )');
+        expect(queryString).toBe('"Origin_EN" = \'European continental platform\' AND "Tecto_lexic" IN ( \'https://dev-lexic.swissgeol.ch/TectonicUnits/InternalFoldedJuraAndForelandPlateau\' ) AND "Chrono_from_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Chronostratigraphy/Jurassic\' ) AND "Litho_lexic" IN ( \'https://dev-lexic.swissgeol.ch/Lithostratigraphy/MolasseGroup\' )');
     });
     //
 });

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import vocabulariesConfig from '../../vocabulariesConfig.json';
 /**
  * Interface representing the structure of a vocabulary
  * 
@@ -22,8 +21,6 @@ export interface VocabulariesState {
     cache: { [key: string]: VocabularyItem[] };
 }
 
-const vocabulariesArray: Vocabulary[] = Object.values(vocabulariesConfig);
-
 /**
  * Interface representing a vocabulary item
  * 
@@ -39,7 +36,7 @@ export interface VocabularyItem {
  * @property cache
  */
 const initialState: VocabulariesState = {
-    vocabularies: vocabulariesArray,
+    vocabularies: [],
     cache: {},
 }
 const vocabulariesSlice = createSlice({

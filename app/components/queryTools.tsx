@@ -327,7 +327,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
             const query = vocab?.queryNarrower.replace('${term}', formattedTerm);
             console.log(query)
             if (vocab) {
-                if (includeLithoNarrowers) {
+                if (includeLithologyNarrowers) {
                     fetch(`/api/graphDb?vocabulary=${vocab.idVocabulary}`,
                         {
                             method: "POST",
@@ -344,7 +344,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                             console.log('Fetched data:', data);
                             let narrowers: string[] = data;
                             const filter = {
-                                filterByLithologyTerm: [{ term: selectedLithologyTerm, includeNarrowers: includeLithoNarrowers, narrowers: narrowers }]
+                                filterByLithologyTerm: [{ term: selectedLithologyTerm, includeNarrowers: includeLithologyNarrowers, narrowers: narrowers }]
                             };
 
                             console.log('Payload passed to addFilter:', { layerId: selectedLayerId, filter, filterType: 'filterByLithologyTerm' });
@@ -356,7 +356,7 @@ const QueryTools: React.FC<QueryToolsProps> = ({ cache }) => {
                         });
                 } else {
                     const filter = {
-                        filterByLithologyTerm: [{ term: selectedLithologyTerm, includeNarrowers: includeLithoNarrowers }]
+                        filterByLithologyTerm: [{ term: selectedLithologyTerm, includeNarrowers: includeLithologyNarrowers }]
                     };
                     console.log('Payload passed to addFilter:', { layerId: selectedLayerId, filter, filterType: 'filterByLithologyTerm' });
                     dispatch(addFilter({ layerId: selectedLayerId, filter, filterType: FiltersType.FilterByLithologyTerm }));

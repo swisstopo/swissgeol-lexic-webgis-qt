@@ -1,15 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-
-function getConfigDB(vocabulary) {
+function getConfigDB(vocabulary, vocabulariesConfig) {
     try {
-        const configPath = path.join(process.cwd(), 'vocabulariesConfig.json');
-        const configFile = fs.readFileSync(configPath, 'utf8');
-        const config = JSON.parse(configFile);
-
-        return config[vocabulary];
+        const vocabConfig = vocabulariesConfig[vocabulary];
+        if (vocabConfig) {
+            return vocabConfig;
+        }
+        return null;
     } catch (error) {
-        console.log('Error reading configuration:', error);
+        console.log('Error retrieving configuration:', error);
         return null;
     }
 }

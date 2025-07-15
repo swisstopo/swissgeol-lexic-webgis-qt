@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# SwissGeolWebMap
+
+A web map application for geologists, designed to visualize geological data layers. It allows users to apply attribute filters based on vocabularies like Chronostratigraphy, Tectonic Units, Lithostratigraphy, and Lithology. The map also features a popup that displays augmented data (such as ID, LitoDE, LitoEN, TectoLexic, etc.) upon clicking a point on the map.
 
 ## Getting Started
 
-First, run the development server:
+First, create a `.env.local` file by copying `.env.example` and fill in the required environment variables.
+
+Then, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Docker
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+To run the application using Docker, you can set the environment variables directly in the `docker-compose.yml` file.
 
-## Learn More
+> **Note:** The `NEXT_PUBLIC_GEOSERVER_BASE_URL` variable must be passed as a **build argument** (using `args` in the `build` section). This is because it is required by Next.js during the build process to be embedded in the client-side code. It is not needed as a runtime environment variable. The `docker-compose.yml` files are already configured for this.
 
-To learn more about Next.js, take a look at the following resources:
+Then, run the container:
+```bash
+docker-compose up --build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The application will be available at http://localhost:3050.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Environment Variables
 
-## Deploy on Vercel
+The application is configured via environment variables. When using Docker, these are set in the `docker-compose.yml` file. For local development, they should be in an `.env.local` file.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+| Variable                                    | Description                                                                 |
+| ------------------------------------------- | --------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_GEOSERVER_BASE_URL`            | The base URL for GeoServer, used to load WMS and WMTS layers.               |
+| `NEXT_PUBLIC_GRAPHDB_BASE_URL`              | The base URL for the GraphDB instance.                                      |
+| `NEXT_PUBLIC_GRAPHDB_USERNAME`              | The username for GraphDB authentication (if required).                      |
+| `NEXT_PUBLIC_GRAPHDB_PASSWORD`              | The password for GraphDB authentication (if required).                      |
+| `NEXT_PUBLIC_CHRONOSTRATIGRAPHY_REPO_ID`    | The repository ID for the Chronostratigraphy vocabulary in GraphDB.         |
+| `NEXT_PUBLIC_TECTONICUNITS_REPO_ID`         | The repository ID for the TectonicUnits vocabulary in GraphDB.              |
+| `NEXT_PUBLIC_LITHOSTRATIGRAPHY_REPO_ID`     | The repository ID for the Lithostratigraphy vocabulary in GraphDB.          |
+| `NEXT_PUBLIC_LITHOLOGY_REPO_ID`             | The repository ID for the Lithology vocabulary in GraphDB.                  |

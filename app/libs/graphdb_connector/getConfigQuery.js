@@ -1,14 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 
-function getQueryConfig(vocabulary) {
+function getQueryConfig(vocabulary, prefix) {
     const configPath = path.join(process.cwd(), 'queryConfig.json');
     const configFile = fs.readFileSync(configPath, 'utf8');
     const config = JSON.parse(configFile);
-    
-    const queryBreadcrumbs = config[vocabulary].queryBreadcrumbs;
-    const queryVocabolo = config[vocabulary].queryVocabolo;
-    const allConcept = config[vocabulary].allConcept;
+
+    const prefixPlaceholder = /\$\{prefix\}/g;
+
+    const queryBreadcrumbs = config[vocabulary].queryBreadcrumbs.replace(prefixPlaceholder, prefix);
+    const queryVocabolo = config[vocabulary].queryVocabolo.replace(prefixPlaceholder, prefix);
+    const allConcept = config[vocabulary].allConcept.replace(prefixPlaceholder, prefix);
     
     return {
         queryBreadcrumbs,
