@@ -407,7 +407,7 @@ const initialState: LayerState = {
             },
             filterConfigurationByLithostratigraphyTerm: {
               idVocabulary: "Lithostratigraphy",
-              queryNarrower:"PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <\${prefix}/LithostratigraphicUnits/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}",
+              queryNarrower:"PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ex: <\${prefix}/Lithostratigraphy/>\n\nSELECT ?concept\n\nWHERE { \nex:${term} skos:narrower+ ?concept.\n}",
               attributeToFilter: ["litstrat_lexic"],
             },
             filterConfigurationByLithologyTerm: {
@@ -564,17 +564,17 @@ const initialState: LayerState = {
           zIndex: 2,
           attributesConfiguration: {
             attributeOverrides: {
-              Tecto_lexic: {
+              tecto_lexic: {
                 column: "tecto_lexic",
                 type: "link",
                 labelSourceForLink: "vocabulary_label",
               },
-              Chrono_from_lexic: {
+              chrono_from_lexic: {
                 column: "chrono_from_lexic",
                 type: "link",
                 labelSourceForLink: "vocabulary_label",
               },
-              Chrono_to_lexic: {
+              chrono_to_lexic: {
                 column: "chrono_to_lexic",
                 type: "link",
                 labelSourceForLink: "vocabulary_label",
