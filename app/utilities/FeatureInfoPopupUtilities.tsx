@@ -42,4 +42,5 @@ export function parseXMLAndGetFeatureData(xmlText: string, layers: Layer[]) {   
       return featuresData;
     }
 
+    return [];
   };

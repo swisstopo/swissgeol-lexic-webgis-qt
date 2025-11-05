@@ -238,139 +238,153 @@ const FeatureInfoPopup: React.FC<FeatureInfoPopupProps> = ({
         </ModalHeader>
         <ModalBody>
           <Box>
-            {tableDataList.map((tableData, tableIndex) => (
-              <Box key={tableIndex}>
-                <Text color="black" margin={2} fontSize={13}>
-                  Layer Name: {tableData[0]?.LayerName}
+            {tableDataList.length === 0 || tableDataList.every(data => !data || data.length === 0) ? (
+              <Box
+                backgroundColor="white"
+                borderRadius={10}
+                padding={20}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Text color="black" fontSize={14}>
+                  No data available at this location
                 </Text>
-                <Box
-                  backgroundColor="white"
-                  borderRadius={10}
-                  justifyContent="center"
-                  mb={10}
-                  maxWidth="100%"
-                  overflow="scroll"
-                >
-                  <table
-                    width="98%"
-                    style={{
-                      marginTop: "0.5%",
-                      border: "none",
-                      overflowX: "auto",
-                      tableLayout: "auto",
-                    }}
+              </Box>
+            ) : (
+              tableDataList.map((tableData, tableIndex) => (
+                <Box key={tableIndex}>
+                  <Text color="black" margin={2} fontSize={13}>
+                    Layer Name: {tableData[0]?.LayerName}
+                  </Text>
+                  <Box
+                    backgroundColor="white"
+                    borderRadius={10}
+                    justifyContent="center"
+                    mb={10}
+                    maxWidth="100%"
+                    overflow="scroll"
                   >
-                    <thead>
-                      <tr>
-                        {tableData[0] ? (
-                          Object.keys(tableData[0])
-                            .filter(
-                              (key) => key !== "LayerName" && key != "CanFilter"
-                            )
-                            .map((key, colIndex) => (
-                              <th
-                                key={colIndex}
-                                style={{
-                                  padding: "3px",
-                                  textAlign: "left",
-                                  fontWeight: "bold",
-                                  color: "red",
-                                  fontSize: "13px",
-                                }}
-                              >
-                                {key}
-                              </th>
-                            ))
-                        ) : (
-                          <th style={{ color: "black" }}>No data available</th>
-                        )}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tableData.map((row: any, rowIndex: number) => (
-                        <tr key={rowIndex}>
-                          {Object.entries(row)
-                            .filter(
-                              ([key, _]) =>
-                                key !== "LayerName" && key !== "CanFilter"
-                            )
-                            .map(([colKey, value], colIndex) => {
-                              const processedValue =
-                                value !== null && value !== undefined
-                                  ? value.toString()
-                                  : "";
-                              const layerName = tableData[0]?.LayerName || "";
-
-                              const override = findAttributeOverride(
-                                layerName,
-                                colKey
-                              );
-                              const vocabolary_label =
-                                getVocabularyLabel(processedValue);
-                              const label = override ? vocabolary_label : value;
-
-                              return (
-                                <td
+                    <table
+                      width="98%"
+                      style={{
+                        marginTop: "0.5%",
+                        border: "none",
+                        overflowX: "auto",
+                        tableLayout: "auto",
+                      }}
+                    >
+                      <thead>
+                        <tr>
+                          {tableData[0] ? (
+                            Object.keys(tableData[0])
+                              .filter(
+                                (key) => key !== "LayerName" && key != "CanFilter"
+                              )
+                              .map((key, colIndex) => (
+                                <th
                                   key={colIndex}
                                   style={{
                                     padding: "3px",
                                     textAlign: "left",
-                                    fontWeight: "lighter",
-                                    color: "black",
-                                    fontSize: "12px",
-                                    verticalAlign: "top",
+                                    fontWeight: "bold",
+                                    color: "red",
+                                    fontSize: "13px",
                                   }}
                                 >
-                                  <Box
-                                    flexDirection="row"
-                                    justifyContent="space-between"
-                                  >
-                                    {override && override.type === "link" ? (
-                                      <a
-                                        href={processedValue}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        style={{
-                                          color: "blue",
-                                          textDecoration: "none",
-                                        }}
-                                      >
-                                        {vocabolary_label || processedValue}
-                                      </a>
-                                    ) : (
-                                      processedValue
-                                    )}
-
-                                    {tableData[0]?.CanFilter && (
-                                      <Pressable
-                                        onPress={() =>
-                                          handleAddFilter(
-                                            tableData[0]?.LayerName,
-                                            colKey,
-                                            value as string
-                                          )
-                                        }
-                                      >
-                                        <Icon
-                                          as={SearchIcon}
-                                          mr="$2"
-                                          w="$3"
-                                          h="$3"
-                                          color="$red600"
-                                        />
-                                      </Pressable>
-                                    )}
-                                  </Box>
-                                </td>
-                              );
-                            })}
+                                  {key}
+                                </th>
+                              ))
+                          ) : (
+                            <th style={{ color: "black" }}>No data available</th>
+                          )}
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {tableData.map((row: any, rowIndex: number) => (
+                          <tr key={rowIndex}>
+                            {Object.entries(row)
+                              .filter(
+                                ([key, _]) =>
+                                  key !== "LayerName" && key !== "CanFilter"
+                              )
+                              .map(([colKey, value], colIndex) => {
+                                const processedValue =
+                                  value !== null && value !== undefined
+                                    ? value.toString()
+                                    : "";
+                                const layerName = tableData[0]?.LayerName || "";
+
+                                const override = findAttributeOverride(
+                                  layerName,
+                                  colKey
+                                );
+                                const vocabolary_label =
+                                  getVocabularyLabel(processedValue);
+                                const label = override ? vocabolary_label : value;
+
+                                return (
+                                  <td
+                                    key={colIndex}
+                                    style={{
+                                      padding: "3px",
+                                      textAlign: "left",
+                                      fontWeight: "lighter",
+                                      color: "black",
+                                      fontSize: "12px",
+                                      verticalAlign: "top",
+                                    }}
+                                  >
+                                    <Box
+                                      flexDirection="row"
+                                      justifyContent="space-between"
+                                    >
+                                      {override && override.type === "link" ? (
+                                        <a
+                                          href={processedValue}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          style={{
+                                            color: "blue",
+                                            textDecoration: "none",
+                                          }}
+                                        >
+                                          {vocabolary_label || processedValue}
+                                        </a>
+                                      ) : (
+                                        processedValue
+                                      )}
+
+                                      {tableData[0]?.CanFilter && (
+                                        <Pressable
+                                          onPress={() =>
+                                            handleAddFilter(
+                                              tableData[0]?.LayerName,
+                                              colKey,
+                                              value as string
+                                            )
+                                          }
+                                        >
+                                          <Icon
+                                            as={SearchIcon}
+                                            mr="$2"
+                                            w="$3"
+                                            h="$3"
+                                            color="$red600"
+                                          />
+                                        </Pressable>
+                                      )}
+                                    </Box>
+                                  </td>
+                                );
+                              })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </Box>
                 </Box>
-              </Box>
-            ))}
+              ))
+            )}
           </Box>
         </ModalBody>
       </Box>
