@@ -5,7 +5,12 @@ on:
     branches: [ dev, int, main ]
   
 name: AWS ECR push
-  
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write  
+
 jobs:
   deploy:
     name: Deploy
